@@ -235,7 +235,9 @@ public partial class LicenseManager : ObservableObject
 			: DateTime.Parse(eltExpirationDate.Value, CultureInfo.InvariantCulture,
 									DateTimeStyles.AdjustToUniversal | DateTimeStyles.AssumeUniversal);
 		//ExpirationDays = Convert.ToInt32(license.Element(ELEMENT_NAME_EXPIRATION_DAYS)!.Value);
-		ExpirationDays = (ExpirationDateUTC == DateTime.MaxValue.Date) ? 0 : (ExpirationDateUTC - MyNow.UtcNow().Date).Days;
+		ExpirationDays = (ExpirationDateUTC == DateTime.MaxValue.Date)
+								? Convert.ToInt32(license.Element(ELEMENT_NAME_EXPIRATION_DAYS)!.Value)
+								: (ExpirationDateUTC - MyNow.UtcNow().Date).Days;
 		Quantity = Convert.ToInt32(license.Element(ELEMENT_NAME_QUANTITY)!.Value);
 		PathAssembly = root.Element(ELEMENT_NAME_PATHASSEMBLY)!.Value;
 		IsLockedToAssembly = !string.IsNullOrEmpty(PathAssembly);
