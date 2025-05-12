@@ -1,7 +1,7 @@
 ﻿<License>
   <Id>2e5a9c06-6b9b-4a35-9c82-967465d0e578</Id>
   <Type>Trial</Type>
-  <Expiration>Wed, 01 Dec 2027 00:00:00 GMT</Expiration>
+  <Expiration>Sun, 02 Jan 2028 00:00:00 GMT</Expiration>
   <Quantity>5</Quantity>
   <ProductFeatures>
     <Feature name="Product">My Sample App</Feature>
@@ -14,9 +14,11 @@
     <Company>Buyer Corporation</Company>
   </Customer>
   <LicenseAttributes>
+    <Attribute name="Region">US</Attribute>
+    <Attribute name="SupportLevel">Premium</Attribute>
     <Attribute name="Product Identity">dbf5c9654dc1061f2cf58c63159d1111c6fa1932627835c02bc40046559dab80</Attribute>
     <Attribute name="Assembly Identity"></Attribute>
-    <Attribute name="Expiration Days">998</Attribute>
+    <Attribute name="Expiration Days">965</Attribute>
   </LicenseAttributes>
-  <Signature>MEUCID63Cqqyp8XzWuaH/5nDbSSNoFI0jvkXcXZafP7QhuSuAiEAuEFE+o3SXLlnov+Ty0DPvNuFbPZnjT3S+QfWyk/ho6U=</Signature>
+  <Signature>MEQCIBzUl1FlKvnImDxbpYYWqmnDPrVw8zRZd7v/gXEmaeW+AiAZuTC2ObI6n4RTor2v/y4b96sZmagvbCO0oT2Szj5POg==</Signature>
 </License>

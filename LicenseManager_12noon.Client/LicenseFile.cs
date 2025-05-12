@@ -1,10 +1,7 @@
 ﻿using Standard.Licensing;
 using Standard.Licensing.Validation;
 using System;
-using System.Collections.Generic;
 using System.Globalization;
-using System.IO;
-using System.Linq;
 using System.Reflection;
 using System.Text;
 
@@ -54,6 +51,9 @@ public partial class LicenseFile
 	public string Product { get; private set; } = string.Empty;
 	public string Version { get; private set; } = string.Empty;
 	public DateOnly? PublishDate { get; private set; }
+
+	public Dictionary<string, string> ProductFeatures { get; private set; } = [];
+	public Dictionary<string, string> LicenseAttributes { get; private set; } = [];
 
 	public string Name { get; private set; } = string.Empty;
 	public string Email { get; private set; } = string.Empty;
@@ -224,6 +224,32 @@ public partial class LicenseFile
 				PublishDate = DateOnly.Parse(s, CultureInfo.InvariantCulture);
 			}
 
+			// Load custom product features
+			ProductFeatures.Clear();
+			foreach (var feature in license.ProductFeatures.GetAll())
+			{
+				// Skip the reserved feature names we already handle specifically
+				if ((feature.Key != ProductFeature_Name_Product) &&
+					 (feature.Key != ProductFeature_Name_Version) &&
+					 (feature.Key != ProductFeature_Name_PublishDate))
+				{
+					ProductFeatures.Add(feature.Key, feature.Value);
+				}
+			}
+
+			// Load custom additional attributes
+			LicenseAttributes.Clear();
+			foreach (var attribute in license.AdditionalAttributes.GetAll())
+			{
+				// Skip the reserved attribute names we already handle specifically
+				if ((attribute.Key != Attribute_Name_ProductIdentity) &&
+					 (attribute.Key != Attribute_Name_AssemblyIdentity) &&
+					 (attribute.Key != Attribute_Name_ExpirationDays))
+				{
+					LicenseAttributes.Add(attribute.Key, attribute.Value);
+				}
+			}
+
 			StandardOrTrial = license.Type;
 			// If the expiration date is set, get the number of days REMAINING until expiry.
 			if (license.Expiration.Date != DateTime.MaxValue.Date)
@@ -281,4 +307,50 @@ public partial class LicenseFile
 		Assembly? asm = Assembly.GetEntryAssembly();
 		return asm?.Location ?? string.Empty;
 	}
+
+	/// <summary>
+	/// Gets a product feature value by its name.
+	/// </summary>
+	/// <param name="featureName">Name of the feature to retrieve.</param>
+	/// <returns>The value of the requested feature.</returns>
+	/// <exception cref="ArgumentException">Thrown when the feature does not exist.</exception>
+	public string GetProductFeature(string featureName)
+	{
+		if (ProductFeatures.TryGetValue(featureName, out string? value))
+		{
+			return value;
+		}
+
+		throw new ArgumentException($"Product feature '{featureName}' does not exist in this license.", nameof(featureName));
+	}
+
+	/// <summary>
+	/// Checks if the license contains a specific product feature.
+	/// </summary>
+	/// <param name="featureName">Name of the feature to check.</param>
+	/// <returns>True if the feature exists, otherwise false.</returns>
+	public bool HasProductFeature(string featureName) => ProductFeatures.ContainsKey(featureName);
+
+	/// <summary>
+	/// Gets an license attribute value by its name.
+	/// </summary>
+	/// <param name="attributeName">Name of the attribute to retrieve.</param>
+	/// <returns>The value of the requested attribute.</returns>
+	/// <exception cref="ArgumentException">Thrown when the attribute does not exist.</exception>
+	public string GetLicenseAttribute(string attributeName)
+	{
+		if (LicenseAttributes.TryGetValue(attributeName, out string? value))
+		{
+			return value;
+		}
+
+		throw new ArgumentException($"License attribute '{attributeName}' does not exist in this license.", nameof(attributeName));
+	}
+
+	/// <summary>
+	/// Checks if the license contains a specific license attribute.
+	/// </summary>
+	/// <param name="attributeName">Name of the attribute to check.</param>
+	/// <returns>True if the attribute exists, otherwise false.</returns>
+	public bool HasLicenseAttribute(string attributeName) => LicenseAttributes.ContainsKey(attributeName);
 }

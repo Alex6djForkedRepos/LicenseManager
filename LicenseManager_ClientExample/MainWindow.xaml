@@ -6,16 +6,15 @@
         xmlns:local="clr-namespace:LicenseManager_ClientExample"
         mc:Ignorable="d"
         Title="12noon License Manager Client Example"
-		  Height="450" Width="800" ResizeMode="CanResize"
+		  Height="500" Width="800" ResizeMode="CanResize"
 		  WindowStartupLocation="CenterScreen" SizeToContent="Height"
 >
-	<Grid VerticalAlignment="Center" HorizontalAlignment="Center">
+	<Grid Margin="5" VerticalAlignment="Center" HorizontalAlignment="Center">
 		<Grid.ColumnDefinitions>
 			<ColumnDefinition Width="Auto" />
 			<ColumnDefinition Width="*" />
 		</Grid.ColumnDefinitions>
 		<Grid.RowDefinitions>
-			<RowDefinition Height="Auto" />
 			<RowDefinition Height="Auto" />
 			<RowDefinition Height="Auto" />
 			<RowDefinition Height="Auto" />
@@ -72,9 +71,43 @@
 		<Label		Grid.Row="10" Grid.Column="0" Content="Company:" />
 		<TextBlock	Grid.Row="10" Grid.Column="1" Text="{Binding Company}" />
 
-		<Label		Grid.Row="11" Grid.Column="0" Content="Locked to assembly:" />
-		<TextBlock	Grid.Row="11" Grid.Column="1" Text="{Binding IsLockedToAssembly}" />
-		<Label		Grid.Row="12" Grid.Column="0" Content="Product ID:" />
-		<TextBlock	Grid.Row="12" Grid.Column="1" Text="{Binding ProductId}" />
+		<Label			Grid.Row="11" Grid.Column="0" Content="Locked to assembly:" />
+		<TextBlock		Grid.Row="11" Grid.Column="1" Text="{Binding IsLockedToAssembly}" />
+		<Label			Grid.Row="12" Grid.Column="0" Content="Product ID:" />
+		<TextBlock		Grid.Row="12" Grid.Column="1" Text="{Binding ProductId}" />
+
+		<Label			Grid.Row="13" Grid.Column="0" Content="Product features:" />
+		<ItemsControl	Grid.Row="13" Grid.Column="1" ItemsSource="{Binding ProductFeatures}"
+				VerticalAlignment="Center">
+			<ItemsControl.ItemTemplate>
+				<DataTemplate>
+					<Grid>
+						<Grid.ColumnDefinitions>
+							<ColumnDefinition Width="Auto"/>
+							<ColumnDefinition Width="*"/>
+						</Grid.ColumnDefinitions>
+						<TextBlock Grid.Column="0" Text="{Binding Key}" FontWeight="Bold" />
+						<TextBlock Grid.Column="1" Text="{Binding Value}" Margin="5,0,0,0" />
+					</Grid>
+				</DataTemplate>
+			</ItemsControl.ItemTemplate>
+		</ItemsControl>
+
+		<Label			Grid.Row="14" Grid.Column="0" Content="License attributes:" VerticalAlignment="Top" />
+		<ItemsControl	Grid.Row="14" Grid.Column="1" ItemsSource="{Binding LicenseAttributes}"
+				VerticalAlignment="Center">
+			<ItemsControl.ItemTemplate>
+				<DataTemplate>
+					<Grid>
+						<Grid.ColumnDefinitions>
+							<ColumnDefinition Width="Auto"/>
+							<ColumnDefinition Width="*"/>
+						</Grid.ColumnDefinitions>
+						<TextBlock Grid.Column="0" Text="{Binding Key}" FontWeight="Bold" />
+						<TextBlock Grid.Column="1" Text="{Binding Value}" Margin="5,0,0,0" />
+					</Grid>
+				</DataTemplate>
+			</ItemsControl.ItemTemplate>
+		</ItemsControl>
 	</Grid>
 </Window>

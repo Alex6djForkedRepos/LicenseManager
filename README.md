@@ -14,7 +14,7 @@ has an improved API to validate licenses in your application.
 
 > Note that the **LicenseManager_12noon.Client** NuGet package includes the
 [Standard.Licensing.12noon NuGet package](https://nuget.org/packages/Standard.Licensing.12noon)
-which has fixes to the `Expiration` property.
+which has fixes for the `Expiration` property.
 When those fixes are incorporated into the original **Standard.Licensing** project, the
 **Standard.Licensing.12noon** package will be deprecated.
 
@@ -64,6 +64,25 @@ These values can be displayed by the licensed application.
 
 The publish date can represent any date you want.
 
+### Product Features
+
+You can add custom product features to your license by specifying them in the `key=value` format.
+These features allow you to define additional metadata or functionality for your product.
+
+1. In the **Product features** field, enter your custom feature in the `key=value` format.
+2. Add as many features as needed, each on a new line.
+3. Save the license file to apply the changes.
+
+For example:
+
+|                 |
+|-----------------|
+| Feature1=Enabled |
+| Feature2=False |
+| MaxWidgets=100 |
+
+The licensed application can then read and use these features as needed.
+
 ### License
 
 | Property | Usage |
@@ -78,6 +97,24 @@ The licensed application can check the type to permit only certain features.
 If the expiration is set to zero, there is no expiry.
 
 The quantity is not enforced.
+
+### License Attributes
+
+License attributes can also be added using the `key=value` format.
+These attributes allow you to define additional properties for the license.
+
+1. In the **License attributes** field, enter your custom attribute in the `key=value` format.
+2. Add as many attributes as needed, each on a new line.
+3. Save the license file to apply the changes.
+
+For example:
+   
+|                 |
+|-----------------|
+| Region=US |
+| SupportLevel=Premium |
+
+The licensed application can access these attributes to enforce specific behaviors or display relevant information.
 
 ### Licensee
 

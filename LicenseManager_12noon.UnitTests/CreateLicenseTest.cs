@@ -1,9 +1,8 @@
 ﻿using LicenseManager_12noon.Client;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 using Standard.Licensing;
-using System.Diagnostics;
 
-namespace LicenseKeys.UnitTests;
+namespace LicenseManager_12noon.UnitTests;
 
 [TestClass]
 public class CreateLicenseTest
@@ -440,7 +439,7 @@ public class CreateLicenseTest
 		manager = new();
 
 		bool isValid = manager.IsThisLicenseValid(PRODUCT_ID, publicKey, PathLicenseFile, pathAssembly: string.Empty, out string errorMessages);
-		Debug.WriteLineIf(!string.IsNullOrEmpty(errorMessages), errorMessages);
+		System.Diagnostics.Debug.WriteLineIf(!string.IsNullOrEmpty(errorMessages), errorMessages);
 		Assert.IsTrue(isValid);
 		Assert.IsFalse(string.IsNullOrEmpty(errorMessages), "Some properties have changed from the default.");
 

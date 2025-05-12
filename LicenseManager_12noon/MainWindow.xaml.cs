@@ -1,7 +1,9 @@
 ﻿using CommunityToolkit.Mvvm.ComponentModel;
 using Microsoft.Win32;
 using System;
+using System.Collections.Generic;
 using System.Diagnostics;
+using System.Linq;
 using System.Windows;
 
 namespace LicenseManager_12noon;
@@ -18,6 +20,12 @@ public partial class MainWindow : Window
 	private string _pathKeypair = string.Empty;
 	[ObservableProperty]
 	private string _pathLicense = string.Empty;
+	[ObservableProperty]
+	private string _productFeaturesText = string.Empty;
+	/// <seealso cref="InitializeProductFeaturesText()"/>
+	[ObservableProperty]
+	private string _licenseAttributesText = string.Empty;
+	/// <seealso cref="InitializeLicenseAttributesText()"/>
 
 	public string PathDefaultFolder
 	{
@@ -52,6 +60,8 @@ public partial class MainWindow : Window
 				CtlErrors.Text = string.Empty;
 			}
 		};
+
+		// Note: The DataContext is LicenseManager.
 	}
 
 	/// <summary>
@@ -267,6 +277,12 @@ All Files|*.*
 
 	private void SaveKeypairButton_Click(object sender, RoutedEventArgs e)
 	{
+		// Force validation
+		if (!ValidateProductFeatures() || !ValidateLicenseAttributes())
+		{
+			return;
+		}
+
 		SaveFileDialog sfd = new()
 		{
 			ClientGuid = new(FileDialogGuid),
@@ -297,6 +313,12 @@ All Files|*.*
 
 	private void SaveLicenseButton_Click(object sender, RoutedEventArgs e)
 	{
+		// Force validation
+		if (!ValidateProductFeatures() || !ValidateLicenseAttributes())
+		{
+			return;
+		}
+
 		SaveFileDialog sfd = new()
 		{
 			ClientGuid = new(FileDialogGuid),
@@ -339,12 +361,16 @@ All Files|*.*
 			TheLicenseManager.LoadKeypair(pathKeypair);
 			PathKeypair = pathKeypair;
 			PathLicense = string.Empty;
+			InitializeProductFeaturesText();
+			InitializeLicenseAttributesText();
 		}
 		catch (Exception)
 		{
 			// Example: .private file does not exist.
 			PathKeypair = string.Empty;
 			PathLicense = string.Empty;
+			ProductFeaturesText = string.Empty;
+			LicenseAttributesText = string.Empty;
 			CtlErrors.Text = "Error loading keypair file. It might be in an old format and need to be recreated.";
 		}
 	}
@@ -364,6 +390,10 @@ All Files|*.*
 		if (isValid)
 		{
 			SetValidationDisplay(isValid: true);
+
+			// Update the text boxes from the dictionary when loading a license
+			InitializeProductFeaturesText();
+			InitializeLicenseAttributesText();
 		}
 		else
 		{
@@ -389,6 +419,56 @@ All Files|*.*
 		if (isValid is null)
 		{
 			CtlErrors.Text = string.Empty;
+		}
+	}
+
+	private void InitializeProductFeaturesText()
+	{
+		ProductFeaturesText = string.Join(Environment.NewLine, TheLicenseManager.ProductFeatures.Select(kvp => $"{kvp.Key}={kvp.Value}"));
+	}
+
+	private void InitializeLicenseAttributesText()
+	{
+		LicenseAttributesText = string.Join(Environment.NewLine, TheLicenseManager.LicenseAttributes.Select(kvp => $"{kvp.Key}={kvp.Value}"));
+	}
+
+	private bool ValidateProductFeatures()
+	{
+		try
+		{
+			// Parse and validate text before saving
+			Dictionary<string, string> newFeatures = Shared.MultilineTextToDictionary.ConvertTextToDictionary(ProductFeaturesText);
+
+			// Call the LicenseManager method to validate and update the features
+			TheLicenseManager.UpdateProductFeatures(newFeatures);
+
+			return true;
+		}
+		catch (ArgumentException ex)
+		{
+			// Display the error message
+			MessageBox.Show(ex.Message, "Invalid Product Feature", MessageBoxButton.OK, MessageBoxImage.Warning);
+			return false;
+		}
+	}
+
+	private bool ValidateLicenseAttributes()
+	{
+		try
+		{
+			// Parse and validate text before saving
+			Dictionary<string, string> newAttributes = Shared.MultilineTextToDictionary.ConvertTextToDictionary(LicenseAttributesText);
+
+			// Call the LicenseManager method to validate and update the attributes
+			TheLicenseManager.UpdateLicenseAttributes(newAttributes);
+
+			return true;
+		}
+		catch (ArgumentException ex)
+		{
+			// Display the error message
+			MessageBox.Show(ex.Message, "Invalid License Attribute", MessageBoxButton.OK, MessageBoxImage.Warning);
+			return false;
 		}
 	}
 }

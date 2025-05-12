@@ -192,6 +192,7 @@
 					<RowDefinition Height="Auto" />
 					<RowDefinition Height="Auto" />
 					<RowDefinition Height="Auto" />
+					<RowDefinition Height="*" />
 				</Grid.RowDefinitions>
 
 				<Label		Grid.Row="0" Grid.Column="0" Content="Product:" />
@@ -200,6 +201,17 @@
 				<TextBox		Grid.Row="1" Grid.Column="1" Text="{Binding Version, UpdateSourceTrigger=PropertyChanged}" />
 				<Label		Grid.Row="2" Grid.Column="0" Content="Date published:" />
 				<DatePicker	Grid.Row="2" Grid.Column="1" SelectedDate="{Binding PublishDate, Converter={StaticResource DateTimeToDateOnlyConverter}}" />
+				<Label		Grid.Row="3" Grid.Column="0" Content="Product features:" VerticalAlignment="Top" />
+				<!-- We do not do a TwoWay binding because we do not want to change the text while the user is editing. -->
+				<TextBox		Grid.Row="3" Grid.Column="1"
+					Text="{Binding ProductFeaturesText, RelativeSource={RelativeSource AncestorType=Window}, Delay=500, UpdateSourceTrigger=PropertyChanged}"
+					AcceptsReturn="True"
+					TextWrapping="Wrap"
+					VerticalScrollBarVisibility="Auto"
+					VerticalAlignment="Stretch"
+					VerticalContentAlignment="Top"
+					ToolTip="Enter features in name=value format, one per line. Value can be empty."
+				/>
 			</Grid>
 		</Border>
 
@@ -209,9 +221,11 @@
 				<Grid.ColumnDefinitions>
 					<ColumnDefinition Width="Auto" />
 					<ColumnDefinition Width="Auto" />
+					<ColumnDefinition Width="Auto" />
 					<ColumnDefinition Width="*" />
 				</Grid.ColumnDefinitions>
 				<Grid.RowDefinitions>
+					<RowDefinition Height="Auto" />
 					<RowDefinition Height="Auto" />
 					<RowDefinition Height="Auto" />
 					<RowDefinition Height="Auto" />
@@ -234,6 +248,16 @@
 				<shared:NumberUpDown Grid.Row="2" Grid.Column="1" Value="{Binding Quantity}" AllowNull="False"
 					Minimum="1"
 					Padding="2" HorizontalContentAlignment="Right" VerticalContentAlignment="Center" VerticalAlignment="Center"
+				 />
+				<Label		Grid.Row="0" Grid.Column="3" Content="License attributes:" />
+				<TextBox		Grid.Row="1" Grid.Column="3" Grid.RowSpan="2" Margin="10,5"
+					Text="{Binding LicenseAttributesText, RelativeSource={RelativeSource AncestorType=Window}, Delay=500, UpdateSourceTrigger=PropertyChanged}"
+					AcceptsReturn="True"
+					TextWrapping="Wrap"
+					VerticalScrollBarVisibility="Auto"
+					VerticalAlignment="Stretch"
+					VerticalContentAlignment="Top"
+					ToolTip="Enter license attributes in name=value format, one per line. Value can be empty."
 				/>
 			</Grid>
 		</Border>
@@ -288,7 +312,7 @@
 				</Button.IsEnabled>
 			</Button>
 
-			<TextBlock x:Name="CtlLicenseValid" Text="Valid 🙂" Visibility="Collapsed" FontSize="20" FontWeight="Bold" Foreground="Green" />
+			<TextBlock x:Name="CtlLicenseValid" Text="Valid 😊" Visibility="Collapsed" FontSize="20" FontWeight="Bold" Foreground="Green" />
 			<TextBlock x:Name="CtlLicenseInvalid" Text="Invalid 😞" Visibility="Collapsed" FontSize="20" FontWeight="Bold" Foreground="Firebrick" />
 		</UniformGrid>
 

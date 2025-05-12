@@ -1,4 +1,5 @@
 ﻿using System.Windows;
+using System.Collections.Generic;
 
 namespace LicenseManager_ClientExample;
 
@@ -23,6 +24,9 @@ public partial class MainWindow : Window
 	public bool IsLockedToAssembly { get; private set; } = false;
 	public string ProductId { get; private set; } = string.Empty;
 
+	public Dictionary<string, string> ProductFeatures { get; private set; } = [];
+	public Dictionary<string, string> LicenseAttributes { get; private set; } = [];
+
 	public MainWindow()
 	{
 		InitializeComponent();
@@ -46,6 +50,34 @@ public partial class MainWindow : Window
 			Company = App.License.Company;
 			IsLockedToAssembly = App.License.IsLockedToAssembly;
 			ProductId = App.License.ProductId;
+
+			// Load custom product features
+			ProductFeatures.Clear();
+			if (App.License.ProductFeatures.Count == 0)
+			{
+				ProductFeatures.Add("No custom product features", string.Empty);
+			}
+			else
+			{
+				foreach (var feature in App.License.ProductFeatures)
+				{
+					ProductFeatures.Add(feature.Key, feature.Value);
+				}
+			}
+
+			// Load custom license attributes
+			LicenseAttributes.Clear();
+			if (App.License.LicenseAttributes.Count == 0)
+			{
+				LicenseAttributes.Add("No custom license attributes", string.Empty);
+			}
+			else
+			{
+				foreach (var attribute in App.License.LicenseAttributes)
+				{
+					LicenseAttributes.Add(attribute.Key, attribute.Value);
+				}
+			}
 		}
 	}
 }

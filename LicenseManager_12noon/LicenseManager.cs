@@ -66,11 +66,19 @@ public partial class LicenseManager : ObservableObject
 	private const string ELEMENT_NAME_VERSION = "version";
 	private const string ELEMENT_NAME_PUBLISH_DATE = "publish-date-utc";
 
+	private const string ELEMENT_NAME_PRODUCT_FEATURES = "product-features";
+	private const string ELEMENT_NAME_FEATURE = "feature";
+	private const string ATTRIBUTE_NAME_NAME = "name";
+	private const string ATTRIBUTE_NAME_VALUE = "value";
+
 	private const string ELEMENT_NAME_LICENSE = "license";
 	private const string ELEMENT_NAME_STANDARD_OR_TRIAL = "standard-or-trial";
 	private const string ELEMENT_NAME_EXPIRATION_DATE = "expiration-date";
 	private const string ELEMENT_NAME_EXPIRATION_DAYS = "expiration-days";
 	private const string ELEMENT_NAME_QUANTITY = "quantity";
+
+	private const string ELEMENT_NAME_LICENSE_ATTRIBUTES = "license-attributes";
+	private const string ELEMENT_NAME_ATTRIBUTE = "attribute";
 
 	private const string ELEMENT_NAME_PATHASSEMBLY = "path-assembly";
 
@@ -82,7 +90,7 @@ public partial class LicenseManager : ObservableObject
 	private const string Attribute_Name_AssemblyIdentity = "Assembly Identity";
 	private const string Attribute_Name_ExpirationDays = "Expiration Days";
 
-	private LicenseFile _licenseFile = new();
+	private readonly LicenseFile _licenseFile = new();
 
 	[ObservableProperty]
 	private LicenseType _standardOrTrial = LicenseType.Standard;
@@ -105,6 +113,41 @@ public partial class LicenseManager : ObservableObject
 	private string _version = string.Empty;
 	[ObservableProperty]
 	private DateOnly? _publishDate;
+
+	[ObservableProperty]
+	private Dictionary<string, string> _productFeatures = [];
+
+	private static readonly HashSet<string> ReservedFeatureNames =
+	[
+		ProductFeature_Name_Product,
+		ProductFeature_Name_Version,
+		ProductFeature_Name_PublishDate,
+	];
+
+	/// <summary>
+	/// Checks if a product feature name is reserved.
+	/// </summary>
+	/// <param name="featureName">The name to check.</param>
+	/// <returns>True if the name is reserved, otherwise false.</returns>
+	public static bool IsReservedFeatureName(string featureName) => ReservedFeatureNames.Contains(featureName);
+
+	[ObservableProperty]
+	private Dictionary<string, string> _licenseAttributes = [];
+
+	private static readonly HashSet<string> ReservedAttributeNames =
+	[
+		 Attribute_Name_ProductIdentity,
+		 Attribute_Name_AssemblyIdentity,
+		 Attribute_Name_ExpirationDays,
+	];
+
+	/// <summary>
+	/// Checks if an attribute name is reserved.
+	/// </summary>
+	/// <param name="attributeName">The name to check.</param>
+	/// <returns>True if the name is reserved, otherwise false.</returns>
+	public static bool IsReservedAttributeName(string attributeName) => ReservedAttributeNames.Contains(attributeName);
+
 
 	[ObservableProperty]
 	private string _name = string.Empty;
@@ -134,17 +177,17 @@ public partial class LicenseManager : ObservableObject
 	private string _productId = string.Empty;
 	private static string CreateProductIdentity(string productId, string keyPublic) => productId + " " + keyPublic;
 
-
 	/// <summary>
 	/// Indicates if any of the properties have changed.
 	/// (If so, the keypair file must be saved.)
 	/// </summary>
 	private void ClearKeypairDirtyFlag() => IsKeypairDirty = false;
-	public void ClearLicenseDirtyFlag() => IsLicenseDirty = false;
+	private void ClearLicenseDirtyFlag() => IsLicenseDirty = false;
 	[ObservableProperty]
 	private bool _isKeypairDirty = false;
 	[ObservableProperty]
 	private bool _isLicenseDirty = false;
+
 	/// <summary>
 	/// We need to know if changes have been made to any of the properties.
 	/// If so, we require the user to save the keypair file
@@ -225,6 +268,38 @@ public partial class LicenseManager : ObservableObject
 		Version = product.Element(ELEMENT_NAME_VERSION)!.Value;
 		string publishDate = product.Element(ELEMENT_NAME_PUBLISH_DATE)!.Value;
 		PublishDate = string.IsNullOrEmpty(publishDate) ? null : DateOnly.Parse(publishDate, CultureInfo.InvariantCulture);
+
+		ProductFeatures.Clear();
+		XElement? productFeatures = root.Element(ELEMENT_NAME_PRODUCT_FEATURES);
+		if (productFeatures is not null)
+		{
+			foreach (var feature in productFeatures.Elements(ELEMENT_NAME_FEATURE))
+			{
+				string? name = feature.Attribute(ATTRIBUTE_NAME_NAME)?.Value;
+				string? value = feature.Attribute(ATTRIBUTE_NAME_VALUE)?.Value;
+
+				if (!string.IsNullOrEmpty(name) && (value is not null)) // value can be empty
+				{
+					ProductFeatures[name] = value;
+				}
+			}
+		}
+
+		LicenseAttributes.Clear();
+		XElement? licenseAttributes = root.Element(ELEMENT_NAME_LICENSE_ATTRIBUTES);
+		if (licenseAttributes is not null)
+		{
+			foreach (var attribute in licenseAttributes.Elements(ELEMENT_NAME_ATTRIBUTE))
+			{
+				string? name = attribute.Attribute(ATTRIBUTE_NAME_NAME)?.Value;
+				string? value = attribute.Attribute(ATTRIBUTE_NAME_VALUE)?.Value;
+
+				if (!string.IsNullOrEmpty(name) && (value is not null)) // value can be empty
+				{
+					LicenseAttributes[name] = value;
+				}
+			}
+		}
 
 		XElement license = root.Element(ELEMENT_NAME_LICENSE)!;
 		StandardOrTrial = Enum.Parse<LicenseType>(license.Element(ELEMENT_NAME_STANDARD_OR_TRIAL)!.Value);
@@ -344,6 +419,22 @@ public partial class LicenseManager : ObservableObject
 					, new XElement(ELEMENT_NAME_VERSION, Version)
 					, new XElement(ELEMENT_NAME_PUBLISH_DATE, PublishDate?.ToString(CultureInfo.InvariantCulture) ?? string.Empty)
 				)
+				, new XElement(ELEMENT_NAME_PRODUCT_FEATURES,
+					ProductFeatures.Select(f =>
+						new XElement(ELEMENT_NAME_FEATURE,
+							new XAttribute(ATTRIBUTE_NAME_NAME, f.Key),
+							new XAttribute(ATTRIBUTE_NAME_VALUE, f.Value)
+						)
+					)
+				)
+				, new XElement(ELEMENT_NAME_LICENSE_ATTRIBUTES,
+					LicenseAttributes.Select(a =>
+						new XElement(ELEMENT_NAME_ATTRIBUTE,
+							new XAttribute(ATTRIBUTE_NAME_NAME, a.Key),
+							new XAttribute(ATTRIBUTE_NAME_VALUE, a.Value)
+						)
+					)
+				)
 				, new XElement(ELEMENT_NAME_LICENSE
 					, new XElement(ELEMENT_NAME_STANDARD_OR_TRIAL, StandardOrTrial)
 					, new XElement(ELEMENT_NAME_EXPIRATION_DATE, (ExpirationDays == 0) ? null : ExpirationDateUTC.ToString(CultureInfo.InvariantCulture))
@@ -431,7 +522,7 @@ public partial class LicenseManager : ObservableObject
 		licenseBuilder
 			.WithMaximumUtilization(Quantity)
 			.WithProductFeatures(
-				new Dictionary<string, string>
+				new Dictionary<string, string>(ProductFeatures)
 				{
 					[ProductFeature_Name_Product] = Product,
 					[ProductFeature_Name_Version] = Version,
@@ -446,7 +537,7 @@ public partial class LicenseManager : ObservableObject
 				}
 			})
 			.WithAdditionalAttributes(
-				new Dictionary<string, string>()
+				new Dictionary<string, string>(LicenseAttributes)
 				{
 					[Attribute_Name_ProductIdentity] = identityProduct,
 					[Attribute_Name_AssemblyIdentity] = identityAssembly,
@@ -554,6 +645,44 @@ public partial class LicenseManager : ObservableObject
 					differences.Add($"Company: Current = {Company}, New = {_licenseFile.Company}");
 				}
 
+				// Check for differences in ProductFeatures
+				// Check for features that exist in current but not in new license or have different values
+				foreach (var feature in ProductFeatures)
+				{
+					if (!_licenseFile.ProductFeatures.TryGetValue(feature.Key, out string? newValue) ||
+						(feature.Value != newValue))
+					{
+						differences.Add($"Product feature '{feature.Key}': Current = {feature.Value}, New = {newValue ?? "not present"}");
+					}
+				}
+				// Check for features that exist in new license but not in current
+				foreach (var feature in _licenseFile.ProductFeatures)
+				{
+					if (!ProductFeatures.ContainsKey(feature.Key))
+					{
+						differences.Add($"Product feature '{feature.Key}': Current = not present, New = {feature.Value}");
+					}
+				}
+
+				// Check for differences in LicenseAttributes
+				// Check for attributes that exist in current but not in new license or have different values
+				foreach (var attribute in LicenseAttributes)
+				{
+					if (!_licenseFile.LicenseAttributes.TryGetValue(attribute.Key, out string? newValue) ||
+						(attribute.Value != newValue))
+					{
+						differences.Add($"License attribute '{attribute.Key}': Current = {attribute.Value}, New = {newValue ?? "not present"}");
+					}
+				}
+				// Check for attributes that exist in new license but not in current
+				foreach (var attribute in _licenseFile.LicenseAttributes)
+				{
+					if (!LicenseAttributes.ContainsKey(attribute.Key))
+					{
+						differences.Add($"License attribute '{attribute.Key}': Current = not present, New = {attribute.Value}");
+					}
+				}
+
 				if (differences.Any())
 				{
 					messages = "The license is valid but the following properties differ from the keypair file:" + Environment.NewLine
@@ -568,6 +697,20 @@ public partial class LicenseManager : ObservableObject
 				Product = _licenseFile.Product;
 				Version = _licenseFile.Version;
 				PublishDate = _licenseFile.PublishDate;
+
+				// Copy product features
+				ProductFeatures.Clear();
+				foreach (var feature in _licenseFile.ProductFeatures)
+				{
+					ProductFeatures.Add(feature.Key, feature.Value);
+				}
+
+				// Copy license attributes
+				LicenseAttributes.Clear();
+				foreach (var attribute in _licenseFile.LicenseAttributes)
+				{
+					LicenseAttributes.Add(attribute.Key, attribute.Value);
+				}
 
 				StandardOrTrial = _licenseFile.StandardOrTrial;
 				ExpirationDateUTC = _licenseFile.ExpirationDateUTC;
@@ -588,6 +731,74 @@ public partial class LicenseManager : ObservableObject
 		finally
 		{
 			ClearLicenseDirtyFlag();
+		}
+	}
+
+	/// <summary>
+	/// Validates and updates product features from the provided dictionary.
+	/// Only updates if there are actual changes to avoid setting dirty flag unnecessarily.
+	/// </summary>
+	/// <param name="newFeatures">Dictionary containing the new product features to validate</param>
+	/// <exception cref="ArgumentException">Thrown when a feature name is reserved</exception>
+	public void UpdateProductFeatures(Dictionary<string, string> newFeatures)
+	{
+		// Only update if there are actual changes to avoid setting dirty flag unnecessarily
+		bool hasChanges = !Shared.MultilineTextToDictionary.DictionariesEqual(
+								 newFeatures, ProductFeatures);
+		if (hasChanges)
+		{
+			// Validate feature names
+			foreach (var feature in newFeatures)
+			{
+				if (IsReservedFeatureName(feature.Key))
+				{
+					throw new ArgumentException($"'{feature.Key}' is a reserved feature name and cannot be used.");
+				}
+			}
+
+			// Replace the dictionary with new values
+			ProductFeatures.Clear();
+			foreach (var feature in newFeatures)
+			{
+				ProductFeatures[feature.Key] = feature.Value;
+			}
+
+			IsKeypairDirty = true;
+			IsLicenseDirty = true;
+		}
+	}
+
+	/// <summary>
+	/// Validates and updates license attributes from the provided dictionary.
+	/// Only updates if there are actual changes to avoid setting dirty flag unnecessarily.
+	/// </summary>
+	/// <param name="newAttributes">Dictionary containing the new license attributes to validate</param>
+	/// <exception cref="ArgumentException">Thrown when an attribute name is reserved</exception>
+	public void UpdateLicenseAttributes(Dictionary<string, string> newAttributes)
+	{
+		// Only update if there are actual changes to avoid setting dirty flag unnecessarily
+		bool hasChanges = !Shared.MultilineTextToDictionary.DictionariesEqual(
+								 newAttributes, LicenseAttributes);
+		if (hasChanges)
+		{
+			// Validate attribute names
+			foreach (var attribute in newAttributes)
+			{
+				if (IsReservedAttributeName(attribute.Key))
+				{
+					throw new ArgumentException($"'{attribute.Key}' is a reserved attribute name and cannot be used.");
+				}
+			}
+
+			// Replace the dictionary with new values
+			LicenseAttributes.Clear();
+			foreach (var attribute in newAttributes)
+			{
+				LicenseAttributes[attribute.Key] = attribute.Value;
+			}
+
+			IsKeypairDirty = true;
+			IsLicenseDirty = true;
 		}
 	}
 }
