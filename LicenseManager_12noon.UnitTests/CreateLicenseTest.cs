@@ -40,6 +40,9 @@ public class CreateLicenseTest
 	[TestCleanup]
 	public void TestTeardown()
 	{
+		// Reset culture to English
+		Thread.CurrentThread.CurrentCulture = new System.Globalization.CultureInfo("en-US");
+		Thread.CurrentThread.CurrentUICulture = new System.Globalization.CultureInfo("en-US");
 	}
 
 
