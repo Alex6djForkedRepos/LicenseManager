@@ -24,6 +24,14 @@ License Manager is a graphical front-end application designed to create and mana
     <SymbolPackageFormat>snupkg</SymbolPackageFormat>
   </PropertyGroup>
 
+  <PropertyGroup Condition="'$(Configuration)|$(TargetFramework)|$(Platform)'=='Debug|net9.0|x64'">
+    <WarningLevel>8</WarningLevel>
+  </PropertyGroup>
+
+  <PropertyGroup Condition="'$(Configuration)|$(TargetFramework)|$(Platform)'=='Release|net9.0|x64'">
+    <WarningLevel>8</WarningLevel>
+  </PropertyGroup>
+
   <ItemGroup>
     <None Include="..\LicenseManager_12noon\lock.png">
       <Pack>True</Pack>
