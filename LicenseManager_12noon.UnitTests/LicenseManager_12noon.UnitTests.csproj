@@ -1,7 +1,7 @@
 ﻿<Project Sdk="MSTest.Sdk/3.6.3">
 
   <PropertyGroup>
-    <TargetFramework>net9.0-windows</TargetFramework>
+    <TargetFramework>net8.0-windows</TargetFramework>
     <Platforms>x64</Platforms>
 
     <Nullable>enable</Nullable>

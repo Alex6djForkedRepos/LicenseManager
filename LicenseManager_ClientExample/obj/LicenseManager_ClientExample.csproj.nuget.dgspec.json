@@ -1,0 +1,67 @@
+{
+  "format": 1,
+  "restore": {
+    "/home/runner/work/LicenseManager/LicenseManager/LicenseManager_ClientExample/LicenseManager_ClientExample.csproj": {}
+  },
+  "projects": {
+    "/home/runner/work/LicenseManager/LicenseManager/LicenseManager_ClientExample/LicenseManager_ClientExample.csproj": {
+      "version": "2.2.0",
+      "restore": {
+        "projectUniqueName": "/home/runner/work/LicenseManager/LicenseManager/LicenseManager_ClientExample/LicenseManager_ClientExample.csproj",
+        "projectName": "LicenseManager_ClientExample",
+        "projectPath": "/home/runner/work/LicenseManager/LicenseManager/LicenseManager_ClientExample/LicenseManager_ClientExample.csproj",
+        "packagesPath": "/home/runner/.nuget/packages/",
+        "outputPath": "/home/runner/work/LicenseManager/LicenseManager/LicenseManager_ClientExample/obj/",
+        "projectStyle": "PackageReference",
+        "configFilePaths": [
+          "/home/runner/.nuget/NuGet/NuGet.Config"
+        ],
+        "originalTargetFrameworks": [
+          "net8.0-windows"
+        ],
+        "sources": {
+          "https://api.nuget.org/v3/index.json": {}
+        },
+        "frameworks": {
+          "net8.0-windows7.0": {
+            "targetAlias": "net8.0-windows",
+            "projectReferences": {}
+          }
+        },
+        "warningProperties": {
+          "warnAsError": [
+            "NU1605"
+          ]
+        }
+      },
+      "frameworks": {
+        "net8.0-windows7.0": {
+          "targetAlias": "net8.0-windows",
+          "dependencies": {
+            "LicenseManager_12noon.Client": {
+              "target": "Package",
+              "version": "[2.2.0, )"
+            }
+          },
+          "imports": [
+            "net461",
+            "net462",
+            "net47",
+            "net471",
+            "net472",
+            "net48",
+            "net481"
+          ],
+          "assetTargetFallback": true,
+          "warn": true,
+          "frameworkReferences": {
+            "Microsoft.NETCore.App": {
+              "privateAssets": "all"
+            }
+          },
+          "runtimeIdentifierGraphPath": "/usr/lib/dotnet/sdk/8.0.117/PortableRuntimeIdentifierGraph.json"
+        }
+      }
+    }
+  }
+}
