@@ -148,12 +148,17 @@ jobs:
       #
       # NUGET PACKAGE
       #
+      # Note: If TagNoV == "0.0.0" we do not want to build the NuGet package, update
+      # the client's project, or commit changes. We only want to build the client.
+      #
       - name: Pack NuGet package to `release` folder
         run: |
           # pack => .\artifacts\package\release\LicenseManager_12noon.Client.1.2.3.4.nupkg
+          # No need to use --include-symbols because it is specified in the project file.
           dotnet pack ${{env.PROJECT_CLIENT_FILE_PATH}} --nologo --no-restore --no-build --configuration ${{env.BUILD_CONFIGURATION}} --runtime win-x64 --output ./release/
 
       - name: Extract and inspect NuGet package
+        if: needs.version.outputs.TagNoV != '0.0.0'
         env:
           NUGET_PACKAGE_NAME: ${{ env.NUGET_PACKAGE_NAME }}
           VERSION: ${{ needs.version.outputs.TagNoV }}
@@ -177,6 +182,7 @@ jobs:
       # Use NuGet package locally (not in the NuGet Gallery)
       # dotnet restore --verbosity detailed
       - name: Install local NuGet package and update Example application
+        if: needs.version.outputs.TagNoV != '0.0.0'
         env:
           VERSION: ${{ needs.version.outputs.TagNoV }}
         run: |
@@ -203,6 +209,7 @@ jobs:
           Get-Content ${{env.PROJECT_EXAMPLE_FILE_PATH}}
 
       - name: Commit changes to Example Client
+        if: needs.version.outputs.TagNoV != '0.0.0'
         run: |
           git config --global user.name 'github-actions[bot]'
           git config --global user.email 'github-actions[bot]@users.noreply.github.com'
@@ -290,7 +297,8 @@ jobs:
           # --skip-duplicate prevents an error if this package version already exists.
           # It cannot overwrite an existing package with the same version.
           dotnet nuget push ./release/*.nupkg --api-key ${{secrets.API_KEY_NUGET}} --source https://api.nuget.org/v3/index.json --skip-duplicate
-          dotnet nuget push ./release/*.snupkg --api-key ${{secrets.API_KEY_NUGET}} --source https://api.nuget.org/v3/index.json --skip-duplicate
+          # Pushing the .nupkg file automatically pushes the associated .snupkg file.
+          #dotnet nuget push ./release/*.snupkg --api-key ${{secrets.API_KEY_NUGET}} --source https://api.nuget.org/v3/index.json --skip-duplicate
           #WHY? GitHub Packages
           #dotnet nuget push ./release/*.nupkg --api-key ${{secrets.TOKEN_PACKAGES}} --source https://nuget.pkg.github.com/${{github.repository_owner}}/index.json --skip-duplicate
           #dotnet nuget push ./release/*.snupkg --api-key ${{secrets.TOKEN_PACKAGES}} --source https://nuget.pkg.github.com/${{github.repository_owner}}/index.json --skip-duplicate
