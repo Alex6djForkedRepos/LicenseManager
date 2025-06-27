@@ -17,7 +17,7 @@ using System.Reflection;
 
 License Manager is a graphical front-end application designed to create and manage licenses for software applications. It leverages the Standard.Licensing project to handle license generation and validation.")]
 [assembly: System.Reflection.AssemblyFileVersionAttribute("2.2.0.0")]
-[assembly: System.Reflection.AssemblyInformationalVersionAttribute("2.2.0+acbe4c773ef49f1ff42b440260c535a233b6729c")]
+[assembly: System.Reflection.AssemblyInformationalVersionAttribute("2.2.0+1ab3fe92076546645567c2d73b157b5ebdd7c02b")]
 [assembly: System.Reflection.AssemblyProductAttribute("12noon License Manager")]
 [assembly: System.Reflection.AssemblyTitleAttribute("LicenseManager_12noon.Client")]
 [assembly: System.Reflection.AssemblyVersionAttribute("2.2.0")]

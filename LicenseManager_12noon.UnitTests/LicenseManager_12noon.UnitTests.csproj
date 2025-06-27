@@ -14,6 +14,7 @@
 
   <ItemGroup>
     <ProjectReference Include="..\LicenseManager_12noon\LicenseManager_12noon.csproj" />
+    <ProjectReference Include="..\LicenseManager_12noon.CLI\LicenseManager_12noon.CLI.csproj" />
   </ItemGroup>
 
   <ItemGroup>

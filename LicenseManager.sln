@@ -21,6 +21,8 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "LicenseManager_ClientExampl
 EndProject
 Project("{C7167F0D-BC9F-4E6E-AFE1-012C56B48DB5}") = "LicenseManager_12noon.Package", "LicenseManager_12noon.Package\LicenseManager_12noon.Package.wapproj", "{0F9A597B-B268-411D-8F05-1A6E86139821}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "LicenseManager_12noon.CLI", "LicenseManager_12noon.CLI\LicenseManager_12noon.CLI.csproj", "{A4CB989C-6B5C-418B-A971-DA6F288ACA6E}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|x64 = Debug|x64
@@ -46,6 +48,10 @@ Global
 		{0F9A597B-B268-411D-8F05-1A6E86139821}.Release|x64.ActiveCfg = Release|x64
 		{0F9A597B-B268-411D-8F05-1A6E86139821}.Release|x64.Build.0 = Release|x64
 		{0F9A597B-B268-411D-8F05-1A6E86139821}.Release|x64.Deploy.0 = Release|x64
+		{A4CB989C-6B5C-418B-A971-DA6F288ACA6E}.Debug|x64.ActiveCfg = Debug|Any CPU
+		{A4CB989C-6B5C-418B-A971-DA6F288ACA6E}.Debug|x64.Build.0 = Debug|Any CPU
+		{A4CB989C-6B5C-418B-A971-DA6F288ACA6E}.Release|x64.ActiveCfg = Release|Any CPU
+		{A4CB989C-6B5C-418B-A971-DA6F288ACA6E}.Release|x64.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
