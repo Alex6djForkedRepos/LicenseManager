@@ -6,8 +6,7 @@
   "expectedPackageFiles": [
     "/home/runner/.nuget/packages/bouncycastle.cryptography/2.4.0/bouncycastle.cryptography.2.4.0.nupkg.sha512",
     "/home/runner/.nuget/packages/communitytoolkit.mvvm/8.4.0/communitytoolkit.mvvm.8.4.0.nupkg.sha512",
-    "/home/runner/.nuget/packages/standard.licensing.12noon/1.2.1.1/standard.licensing.12noon.1.2.1.1.nupkg.sha512",
-    "/home/runner/.nuget/packages/licensemanager_12noon.client/2.2.0/licensemanager_12noon.client.2.2.0.nupkg.sha512"
+    "/home/runner/.nuget/packages/standard.licensing.12noon/1.2.1.1/standard.licensing.12noon.1.2.1.1.nupkg.sha512"
   ],
   "logs": []
 }
