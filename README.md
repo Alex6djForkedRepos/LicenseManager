@@ -164,6 +164,8 @@ prompt you for where to save the `.lic` file.
 
 ### Command Line Interface
 
+The License Manager application includes a built-in command line interface. The same executable can run in both GUI mode (when launched without arguments) and CLI mode (when arguments are provided).
+
 Once you have created a `.private` file using the GUI, you can use the command line interface to generate new license files more efficiently.
 
 #### Usage
