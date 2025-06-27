@@ -162,6 +162,54 @@ prompt you for where to save the `.private` file.
 1. Press the _Save License..._ button to create a new license. This will
 prompt you for where to save the `.lic` file.
 
+### Command Line Interface
+
+Once you have created a `.private` file using the GUI, you can use the command line interface to generate new license files more efficiently.
+
+#### Usage
+
+```bash
+licensemanager --private <path> --license <path> [options]
+```
+
+#### Required Arguments
+
+- `--private, -p <path>` - Path to the `.private` file
+- `--license, -l <path>` - Path to the new `.lic` file (must not exist)
+
+#### Optional Arguments
+
+- `--type, -t <type>` - License type: Standard or Trial
+- `--quantity, -q <number>` - License quantity (positive integer)
+- `--expiration-days, -ed <days>` - Expiration in days (0 = no expiry)
+- `--expiration-date, -e <date>` - Expiration date (YYYY-MM-DD format)
+- `--product-version, -v <version>` - Product version
+- `--product-publish-date, -pd <date>` - Product publish date (YYYY-MM-DD)
+- `--help, -h` - Show help
+
+#### Examples
+
+```bash
+# Create a standard license using default settings from .private file
+licensemanager -p my.private -l customer.lic
+
+# Create a 30-day trial license
+licensemanager -p my.private -l trial.lic --type Trial --expiration-days 30
+
+# Create an enterprise license with custom quantity and version
+licensemanager -p my.private -l enterprise.lic --quantity 100 --product-version 2.1.0
+```
+
+#### Security Notes
+
+The CLI **cannot** override these protected properties from the `.private` file:
+- Passphrase
+- Public or private keys  
+- Product name
+- Customer name, email, or company
+
+If the license file already exists, it will not be overwritten and an error will be displayed.
+
 ### The Licensed Application
 
 Install the `LicenseManager_12noon.Client` NuGet package in your application.
