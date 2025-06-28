@@ -255,7 +255,7 @@ public class CliArgumentParserTest
 		// Arrange
 		var manager = new LicenseManager();
 		var expirationDate = DateTime.UtcNow.Date.AddDays(45);
-		
+
 		var parser = new CliArgumentParser
 		{
 			ExpirationDate = expirationDate
@@ -529,7 +529,7 @@ public class CliArgumentParserTest
 		// Arrange
 		var manager = new LicenseManager();
 		manager.ProductFeatures["ExistingFeature"] = "ExistingValue";
-		
+
 		var parser = new CliArgumentParser();
 		parser.ProductFeatures["Color"] = "Blue";
 		parser.ProductFeatures["Edition"] = "Pro";
@@ -550,7 +550,7 @@ public class CliArgumentParserTest
 		// Arrange
 		var manager = new LicenseManager();
 		manager.LicenseAttributes["ExistingAttr"] = "ExistingValue";
-		
+
 		var parser = new CliArgumentParser();
 		parser.LicenseAttributes["Size"] = "Large";
 		parser.LicenseAttributes["Department"] = "Engineering";

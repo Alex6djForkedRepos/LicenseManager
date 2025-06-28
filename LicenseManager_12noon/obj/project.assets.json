@@ -1,7 +1,7 @@
 {
   "version": 3,
   "targets": {
-    "net8.0-windows7.0": {
+    "net9.0-windows7.0": {
       "BouncyCastle.Cryptography/2.4.0": {
         "type": "package",
         "compile": {
@@ -37,15 +37,15 @@
           "BouncyCastle.Cryptography": "2.4.0"
         },
         "compile": {
-          "lib/net8.0/Standard.Licensing.dll": {}
+          "lib/net9.0/Standard.Licensing.dll": {}
         },
         "runtime": {
-          "lib/net8.0/Standard.Licensing.dll": {}
+          "lib/net9.0/Standard.Licensing.dll": {}
         }
       },
-      "LicenseManager_12noon.Client/2.2.0": {
+      "LicenseManager_12noon.Client/1.0.0": {
         "type": "project",
-        "framework": ".NETCoreApp,Version=v8.0",
+        "framework": ".NETCoreApp,Version=v9.0",
         "dependencies": {
           "Standard.Licensing.12noon": "1.2.1.1"
         },
@@ -122,12 +122,11 @@
       ]
     },
     "Standard.Licensing.12noon/1.2.1.1": {
-      "sha512": "Tj1CjNueoy/YwrbMba58c22UWX+rmu6pH0EZDHk3cJGI/UF4J2weN+XKt2EzhaCGFkcUfleajbqYKu0tdExwHw==",
+      "sha512": "M1RZAp784R/IU1Jvc0W1xcfQfMgiWCPCowUmV85GHi8UzgCYEMAMlFfbO6IWuyEsgfFswHfBrmWPb+zhtdk1aQ==",
       "type": "package",
       "path": "standard.licensing.12noon/1.2.1.1",
       "files": [
         ".nupkg.metadata",
-        ".signature.p7s",
         "LICENSE",
         "README.md",
         "lib/net461/Standard.Licensing.dll",
@@ -140,45 +139,55 @@
         "standard.licensing.12noon.nuspec"
       ]
     },
-    "LicenseManager_12noon.Client/2.2.0": {
+    "LicenseManager_12noon.Client/1.0.0": {
       "type": "project",
       "path": "../LicenseManager_12noon.Client/LicenseManager_12noon.Client.csproj",
       "msbuildProject": "../LicenseManager_12noon.Client/LicenseManager_12noon.Client.csproj"
     }
   },
   "projectFileDependencyGroups": {
-    "net8.0-windows7.0": [
+    "net9.0-windows7.0": [
       "CommunityToolkit.Mvvm >= 8.4.0",
-      "LicenseManager_12noon.Client >= 2.2.0"
+      "LicenseManager_12noon.Client >= 1.0.0"
     ]
   },
   "packageFolders": {
-    "/home/runner/.nuget/packages/": {}
+    "C:\\Users\\Stefan\\.nuget\\packages\\": {},
+    "C:\\Program Files (x86)\\Microsoft Visual Studio\\Shared\\NuGetPackages": {}
   },
   "project": {
     "version": "2.2.0",
     "restore": {
-      "projectUniqueName": "/home/runner/work/LicenseManager/LicenseManager/LicenseManager_12noon/LicenseManager_12noon.csproj",
+      "projectUniqueName": "C:\\OneDrive\\Development\\12noon\\LicenseManager\\LicenseManager_12noon\\LicenseManager_12noon.csproj",
       "projectName": "LicenseManager_12noon",
-      "projectPath": "/home/runner/work/LicenseManager/LicenseManager/LicenseManager_12noon/LicenseManager_12noon.csproj",
-      "packagesPath": "/home/runner/.nuget/packages/",
-      "outputPath": "/home/runner/work/LicenseManager/LicenseManager/LicenseManager_12noon/obj/",
+      "projectPath": "C:\\OneDrive\\Development\\12noon\\LicenseManager\\LicenseManager_12noon\\LicenseManager_12noon.csproj",
+      "packagesPath": "C:\\Users\\Stefan\\.nuget\\packages\\",
+      "outputPath": "C:\\OneDrive\\Development\\12noon\\LicenseManager\\LicenseManager_12noon\\obj\\",
       "projectStyle": "PackageReference",
+      "fallbackFolders": [
+        "C:\\Program Files (x86)\\Microsoft Visual Studio\\Shared\\NuGetPackages"
+      ],
       "configFilePaths": [
-        "/home/runner/.nuget/NuGet/NuGet.Config"
+        "C:\\Users\\Stefan\\AppData\\Roaming\\NuGet\\NuGet.Config",
+        "C:\\Program Files (x86)\\NuGet\\Config\\Microsoft.VisualStudio.FallbackLocation.config",
+        "C:\\Program Files (x86)\\NuGet\\Config\\Microsoft.VisualStudio.Offline.config"
       ],
       "originalTargetFrameworks": [
-        "net8.0-windows"
+        "net9.0-windows"
       ],
       "sources": {
+        "C:\\Program Files (x86)\\Microsoft SDKs\\NuGetPackages\\": {},
+        "C:\\Program Files\\dotnet\\library-packs": {},
+        "C:\\Users\\Stefan\\AppData\\Roaming\\NuGet\\temp\\": {},
+        "C:\\VSIntermediate\\NuGetPackagesLocal": {},
         "https://api.nuget.org/v3/index.json": {}
       },
       "frameworks": {
-        "net8.0-windows7.0": {
-          "targetAlias": "net8.0-windows",
+        "net9.0-windows7.0": {
+          "targetAlias": "net9.0-windows",
           "projectReferences": {
-            "/home/runner/work/LicenseManager/LicenseManager/LicenseManager_12noon.Client/LicenseManager_12noon.Client.csproj": {
-              "projectPath": "/home/runner/work/LicenseManager/LicenseManager/LicenseManager_12noon.Client/LicenseManager_12noon.Client.csproj"
+            "C:\\OneDrive\\Development\\12noon\\LicenseManager\\LicenseManager_12noon.Client\\LicenseManager_12noon.Client.csproj": {
+              "projectPath": "C:\\OneDrive\\Development\\12noon\\LicenseManager\\LicenseManager_12noon.Client\\LicenseManager_12noon.Client.csproj"
             }
           }
         }
@@ -187,11 +196,17 @@
         "warnAsError": [
           "NU1605"
         ]
-      }
+      },
+      "restoreAuditProperties": {
+        "enableAudit": "true",
+        "auditLevel": "low",
+        "auditMode": "direct"
+      },
+      "SdkAnalysisLevel": "9.0.300"
     },
     "frameworks": {
-      "net8.0-windows7.0": {
-        "targetAlias": "net8.0-windows",
+      "net9.0-windows7.0": {
+        "targetAlias": "net9.0-windows",
         "dependencies": {
           "CommunityToolkit.Mvvm": {
             "target": "Package",
@@ -212,9 +227,12 @@
         "frameworkReferences": {
           "Microsoft.NETCore.App": {
             "privateAssets": "all"
+          },
+          "Microsoft.WindowsDesktop.App.WPF": {
+            "privateAssets": "none"
           }
         },
-        "runtimeIdentifierGraphPath": "/usr/lib/dotnet/sdk/8.0.117/PortableRuntimeIdentifierGraph.json"
+        "runtimeIdentifierGraphPath": "C:\\Program Files\\dotnet\\sdk\\9.0.301/PortableRuntimeIdentifierGraph.json"
       }
     }
   }

@@ -108,7 +108,7 @@ public class CliArgumentParser
 					}
 					if (!DateTime.TryParse(args[++i], CultureInfo.InvariantCulture, DateTimeStyles.None, out var expirationDate))
 					{
-						throw new ArgumentException("Invalid expiration date format. Use YYYY-MM-DD or MM/DD/YYYY format");
+						throw new ArgumentException("Invalid expiration-date format. Use YYYY-MM-DD format");
 					}
 					parser.ExpirationDate = expirationDate;
 					break;
@@ -130,7 +130,7 @@ public class CliArgumentParser
 					}
 					if (!DateOnly.TryParse(args[++i], CultureInfo.InvariantCulture, DateTimeStyles.None, out var publishDate))
 					{
-						throw new ArgumentException("Invalid product publish date format. Use YYYY-MM-DD format");
+						throw new ArgumentException("Invalid product-publish date format. Use YYYY-MM-DD format");
 					}
 					parser.ProductPublishDate = publishDate;
 					break;
@@ -188,6 +188,9 @@ public class CliArgumentParser
 		}
 
 		string[] pairs = input.Split(' ', StringSplitOptions.RemoveEmptyEntries);
+//TODO? Use MultilineTextToDictionary to parse key=value
+// join pairs with Newline
+// call ConvertTextToDictionary()
 		foreach (string pair in pairs)
 		{
 			int equalsIndex = pair.IndexOf('=');
