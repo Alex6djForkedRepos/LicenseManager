@@ -8,6 +8,46 @@ namespace LicenseManager_12noon.UnitTests;
 [TestClass]
 public class CliArgumentParserTest
 {
+#pragma warning disable CS8618 // Non-nullable field must contain a non-null value when exiting constructor. Consider declaring as nullable.
+	private static TestContext _testContext;
+#pragma warning restore CS8618 // Non-nullable field must contain a non-null value when exiting constructor. Consider declaring as nullable.
+
+	private static string PathTestFolder = string.Empty;
+
+	private string PathLicenseFile = string.Empty;
+	private string PathKeypairFile = string.Empty;
+
+	[ClassInitialize]
+	public static void ClassSetup(TestContext testContext)
+	{
+		_testContext = testContext;
+
+		PathTestFolder = testContext.TestRunResultsDirectory ?? Environment.GetFolderPath(Environment.SpecialFolder.MyDocuments);
+	}
+
+	[ClassCleanup]
+	public static void ClassTeardown()
+	{
+	}
+
+	[TestInitialize]
+	public void TestSetup()
+	{
+		PathLicenseFile = Path.Combine(PathTestFolder, _testContext.TestName + LicenseManager_12noon.LicenseManager.FileExtension_License);
+		PathKeypairFile = Path.Combine(PathTestFolder, _testContext.TestName + LicenseManager_12noon.LicenseManager.FileExtension_PrivateKey);
+	}
+
+	[TestCleanup]
+	public void TestTeardown()
+	{
+		File.Delete(PathLicenseFile);
+		File.Delete(PathKeypairFile);
+
+		// Reset culture to English
+		Thread.CurrentThread.CurrentCulture = new System.Globalization.CultureInfo("en-US");
+		Thread.CurrentThread.CurrentUICulture = new System.Globalization.CultureInfo("en-US");
+	}
+
 	[TestMethod]
 	public void TestParseBasicArguments()
 	{
@@ -431,12 +471,15 @@ public class CliArgumentParserTest
 	public void TestValidateReservedProductFeatureNames()
 	{
 		// Arrange
-		var parser = new CliArgumentParser
+		CliArgumentParser parser = new()
 		{
-			PrivateFilePath = "test.private",
-			LicenseFilePath = "test.lic"
+			PrivateFilePath = PathKeypairFile,
+			LicenseFilePath = PathLicenseFile,
 		};
 		parser.ProductFeatures["Product"] = "SomeValue"; // Reserved name
+
+		// Create the private file to avoid that error.
+		File.WriteAllText(parser.PrivateFilePath, "Private file");
 
 		// Act & Assert
 		var exception = Assert.ThrowsException<ArgumentException>(() => parser.Validate());
@@ -447,12 +490,15 @@ public class CliArgumentParserTest
 	public void TestValidateReservedLicenseAttributeNames()
 	{
 		// Arrange
-		var parser = new CliArgumentParser
+		CliArgumentParser parser = new()
 		{
-			PrivateFilePath = "test.private",
-			LicenseFilePath = "test.lic"
+			PrivateFilePath = PathKeypairFile,
+			LicenseFilePath = PathLicenseFile,
 		};
 		parser.LicenseAttributes["Product Identity"] = "SomeValue"; // Reserved name
+
+		// Create the private file to avoid that error.
+		File.WriteAllText(parser.PrivateFilePath, "Private file");
 
 		// Act & Assert
 		var exception = Assert.ThrowsException<ArgumentException>(() => parser.Validate());
@@ -466,7 +512,7 @@ public class CliArgumentParserTest
 		var manager = new LicenseManager();
 		var parser = new CliArgumentParser
 		{
-			LockPath = "C:\\MyApp\\MyApp.exe"
+			LockPath = "C:\\MyApp\\MyApp.exe",
 		};
 
 		// Act
