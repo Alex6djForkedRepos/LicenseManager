@@ -71,9 +71,9 @@ public partial class App : Application
 			parsedArgs.ApplyOverrides(manager);
 			
 			// Show what was overridden
-			bool hasOverrides = parsedArgs.LicenseType.HasValue || parsedArgs.Quantity.HasValue ||
-			                   parsedArgs.ExpirationDays.HasValue || parsedArgs.ExpirationDate.HasValue ||
-			                   !string.IsNullOrEmpty(parsedArgs.ProductVersion) || parsedArgs.ProductPublishDate.HasValue;
+			bool hasOverrides = (parsedArgs.LicenseType.HasValue) || (parsedArgs.Quantity.HasValue) ||
+			                   (parsedArgs.ExpirationDays.HasValue) || (parsedArgs.ExpirationDate.HasValue) ||
+			                   (!string.IsNullOrEmpty(parsedArgs.ProductVersion)) || (parsedArgs.ProductPublishDate.HasValue);
 			
 			if (hasOverrides)
 			{

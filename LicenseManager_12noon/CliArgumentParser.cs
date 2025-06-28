@@ -196,33 +196,33 @@ public class CliArgumentParser
 	/// <param name="manager">License manager to apply overrides to</param>
 	public void ApplyOverrides(LicenseManager manager)
 	{
-		if (LicenseType.HasValue && manager.StandardOrTrial != LicenseType.Value)
+		if ((LicenseType.HasValue) && (manager.StandardOrTrial != LicenseType.Value))
 		{
 			manager.StandardOrTrial = LicenseType.Value;
 		}
 			
-		if (Quantity.HasValue && manager.Quantity != Quantity.Value)
+		if ((Quantity.HasValue) && (manager.Quantity != Quantity.Value))
 		{
 			manager.Quantity = Quantity.Value;
 		}
 			
-		if (ExpirationDays.HasValue && manager.ExpirationDays != ExpirationDays.Value)
+		if ((ExpirationDays.HasValue) && (manager.ExpirationDays != ExpirationDays.Value))
 		{
 			manager.ExpirationDays = ExpirationDays.Value;
 			// ExpirationDateUTC is automatically updated by the property change handler
 		}
-		else if (ExpirationDate.HasValue && manager.ExpirationDateUTC != ExpirationDate.Value)
+		else if ((ExpirationDate.HasValue) && (manager.ExpirationDateUTC != ExpirationDate.Value))
 		{
 			manager.ExpirationDateUTC = ExpirationDate.Value;
 			manager.ExpirationDays = (int)(ExpirationDate.Value - MyNow.UtcNow().Date).TotalDays;
 		}
 			
-		if (!string.IsNullOrWhiteSpace(ProductVersion) && manager.Version != ProductVersion)
+		if ((!string.IsNullOrWhiteSpace(ProductVersion)) && (manager.Version != ProductVersion))
 		{
 			manager.Version = ProductVersion;
 		}
 			
-		if (ProductPublishDate.HasValue && manager.PublishDate != ProductPublishDate.Value)
+		if ((ProductPublishDate.HasValue) && (manager.PublishDate != ProductPublishDate.Value))
 		{
 			manager.PublishDate = ProductPublishDate.Value;
 		}
