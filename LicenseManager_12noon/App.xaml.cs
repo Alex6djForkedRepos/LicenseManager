@@ -67,13 +67,41 @@ public partial class App : Application
 			Console.WriteLine($"Quantity: {manager.Quantity}");
 			Console.WriteLine($"Expiration Days: {manager.ExpirationDays}");
 			
+			// Display lock file information if present
+			if (manager.IsLockedToAssembly && !string.IsNullOrEmpty(manager.PathAssembly))
+			{
+				Console.WriteLine($"Lock File: {manager.PathAssembly}");
+			}
+			
+			// Display product features if any
+			if (manager.ProductFeatures.Count > 0)
+			{
+				Console.WriteLine($"Product Features:");
+				foreach (var feature in manager.ProductFeatures)
+				{
+					Console.WriteLine($"  {feature.Key} = {feature.Value}");
+				}
+			}
+			
+			// Display license attributes if any
+			if (manager.LicenseAttributes.Count > 0)
+			{
+				Console.WriteLine($"License Attributes:");
+				foreach (var attribute in manager.LicenseAttributes)
+				{
+					Console.WriteLine($"  {attribute.Key} = {attribute.Value}");
+				}
+			}
+			
 			// Apply CLI overrides
 			parsedArgs.ApplyOverrides(manager);
 			
 			// Show what was overridden
 			bool hasOverrides = (parsedArgs.LicenseType.HasValue) || (parsedArgs.Quantity.HasValue) ||
 			                   (parsedArgs.ExpirationDays.HasValue) || (parsedArgs.ExpirationDate.HasValue) ||
-			                   (!string.IsNullOrEmpty(parsedArgs.ProductVersion)) || (parsedArgs.ProductPublishDate.HasValue);
+			                   (!string.IsNullOrEmpty(parsedArgs.ProductVersion)) || (parsedArgs.ProductPublishDate.HasValue) ||
+			                   (!string.IsNullOrEmpty(parsedArgs.LockPath)) || (parsedArgs.ProductFeatures.Count > 0) ||
+			                   (parsedArgs.LicenseAttributes.Count > 0);
 			
 			if (hasOverrides)
 			{
@@ -102,6 +130,26 @@ public partial class App : Application
 				if (parsedArgs.ProductPublishDate.HasValue)
 				{
 					Console.WriteLine($"  Product Publish Date: {manager.PublishDate}");
+				}
+				if (!string.IsNullOrEmpty(parsedArgs.LockPath))
+				{
+					Console.WriteLine($"  Lock File: {manager.PathAssembly}");
+				}
+				if (parsedArgs.ProductFeatures.Count > 0)
+				{
+					Console.WriteLine($"  Product Features:");
+					foreach (var feature in parsedArgs.ProductFeatures)
+					{
+						Console.WriteLine($"    {feature.Key} = {feature.Value}");
+					}
+				}
+				if (parsedArgs.LicenseAttributes.Count > 0)
+				{
+					Console.WriteLine($"  License Attributes:");
+					foreach (var attribute in parsedArgs.LicenseAttributes)
+					{
+						Console.WriteLine($"    {attribute.Key} = {attribute.Value}");
+					}
 				}
 			}
 			
