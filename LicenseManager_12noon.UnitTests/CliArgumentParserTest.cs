@@ -344,4 +344,203 @@ public class CliArgumentParserTest
 		parser2.ApplyOverrides(manager);
 		Assert.AreEqual(new DateOnly(2023, 12, 1), manager.PublishDate);
 	}
+
+	[TestMethod]
+	public void TestParseLockArgument()
+	{
+		// Arrange
+		string[] args = ["--private", "test.private", "--license", "test.lic", "--lock", "C:\\MyApp\\MyApp.exe"];
+
+		// Act
+		var result = CliArgumentParser.Parse(args);
+
+		// Assert
+		Assert.AreEqual("C:\\MyApp\\MyApp.exe", result.LockPath);
+	}
+
+	[TestMethod]
+	public void TestParseProductFeatures()
+	{
+		// Arrange
+		string[] args = ["--private", "test.private", "--license", "test.lic", "--product-features", "Color=Blue Bird=Heron Edition=Pro"];
+
+		// Act
+		var result = CliArgumentParser.Parse(args);
+
+		// Assert
+		Assert.AreEqual(3, result.ProductFeatures.Count);
+		Assert.AreEqual("Blue", result.ProductFeatures["Color"]);
+		Assert.AreEqual("Heron", result.ProductFeatures["Bird"]);
+		Assert.AreEqual("Pro", result.ProductFeatures["Edition"]);
+	}
+
+	[TestMethod]
+	public void TestParseLicenseAttributes()
+	{
+		// Arrange
+		string[] args = ["--private", "test.private", "--license", "test.lic", "--license-attributes", "Size=Large Department=Engineering Location=Seattle"];
+
+		// Act
+		var result = CliArgumentParser.Parse(args);
+
+		// Assert
+		Assert.AreEqual(3, result.LicenseAttributes.Count);
+		Assert.AreEqual("Large", result.LicenseAttributes["Size"]);
+		Assert.AreEqual("Engineering", result.LicenseAttributes["Department"]);
+		Assert.AreEqual("Seattle", result.LicenseAttributes["Location"]);
+	}
+
+	[TestMethod]
+	public void TestParseKeyValuePairs_EmptyValue()
+	{
+		// Arrange
+		string[] args = ["--private", "test.private", "--license", "test.lic", "--product-features", "Key1= Key2=Value"];
+
+		// Act
+		var result = CliArgumentParser.Parse(args);
+
+		// Assert
+		Assert.AreEqual(2, result.ProductFeatures.Count);
+		Assert.AreEqual("", result.ProductFeatures["Key1"]);
+		Assert.AreEqual("Value", result.ProductFeatures["Key2"]);
+	}
+
+	[TestMethod]
+	public void TestParseKeyValuePairs_InvalidFormat()
+	{
+		// Arrange
+		string[] args = ["--private", "test.private", "--license", "test.lic", "--product-features", "InvalidFormat"];
+
+		// Act & Assert
+		var exception = Assert.ThrowsException<ArgumentException>(() => CliArgumentParser.Parse(args));
+		Assert.IsTrue(exception.Message.Contains("Expected key=value format"));
+	}
+
+	[TestMethod]
+	public void TestParseKeyValuePairs_EmptyKey()
+	{
+		// Arrange
+		string[] args = ["--private", "test.private", "--license", "test.lic", "--product-features", "=Value"];
+
+		// Act & Assert
+		var exception = Assert.ThrowsException<ArgumentException>(() => CliArgumentParser.Parse(args));
+		Assert.IsTrue(exception.Message.Contains("Key cannot be empty"));
+	}
+
+	[TestMethod]
+	public void TestValidateReservedProductFeatureNames()
+	{
+		// Arrange
+		var parser = new CliArgumentParser
+		{
+			PrivateFilePath = "test.private",
+			LicenseFilePath = "test.lic"
+		};
+		parser.ProductFeatures["Product"] = "SomeValue"; // Reserved name
+
+		// Act & Assert
+		var exception = Assert.ThrowsException<ArgumentException>(() => parser.Validate());
+		Assert.IsTrue(exception.Message.Contains("reserved product feature name"));
+	}
+
+	[TestMethod]
+	public void TestValidateReservedLicenseAttributeNames()
+	{
+		// Arrange
+		var parser = new CliArgumentParser
+		{
+			PrivateFilePath = "test.private",
+			LicenseFilePath = "test.lic"
+		};
+		parser.LicenseAttributes["Product Identity"] = "SomeValue"; // Reserved name
+
+		// Act & Assert
+		var exception = Assert.ThrowsException<ArgumentException>(() => parser.Validate());
+		Assert.IsTrue(exception.Message.Contains("reserved license attribute name"));
+	}
+
+	[TestMethod]
+	public void TestApplyLockOverride()
+	{
+		// Arrange
+		var manager = new LicenseManager();
+		var parser = new CliArgumentParser
+		{
+			LockPath = "C:\\MyApp\\MyApp.exe"
+		};
+
+		// Act
+		parser.ApplyOverrides(manager);
+
+		// Assert
+		Assert.AreEqual("C:\\MyApp\\MyApp.exe", manager.PathAssembly);
+		Assert.IsTrue(manager.IsLockedToAssembly);
+	}
+
+	[TestMethod]
+	public void TestApplyProductFeaturesOverride()
+	{
+		// Arrange
+		var manager = new LicenseManager();
+		manager.ProductFeatures["ExistingFeature"] = "ExistingValue";
+		
+		var parser = new CliArgumentParser();
+		parser.ProductFeatures["Color"] = "Blue";
+		parser.ProductFeatures["Edition"] = "Pro";
+
+		// Act
+		parser.ApplyOverrides(manager);
+
+		// Assert
+		Assert.AreEqual(3, manager.ProductFeatures.Count);
+		Assert.AreEqual("ExistingValue", manager.ProductFeatures["ExistingFeature"]);
+		Assert.AreEqual("Blue", manager.ProductFeatures["Color"]);
+		Assert.AreEqual("Pro", manager.ProductFeatures["Edition"]);
+	}
+
+	[TestMethod]
+	public void TestApplyLicenseAttributesOverride()
+	{
+		// Arrange
+		var manager = new LicenseManager();
+		manager.LicenseAttributes["ExistingAttr"] = "ExistingValue";
+		
+		var parser = new CliArgumentParser();
+		parser.LicenseAttributes["Size"] = "Large";
+		parser.LicenseAttributes["Department"] = "Engineering";
+
+		// Act
+		parser.ApplyOverrides(manager);
+
+		// Assert
+		Assert.AreEqual(3, manager.LicenseAttributes.Count);
+		Assert.AreEqual("ExistingValue", manager.LicenseAttributes["ExistingAttr"]);
+		Assert.AreEqual("Large", manager.LicenseAttributes["Size"]);
+		Assert.AreEqual("Engineering", manager.LicenseAttributes["Department"]);
+	}
+
+	[TestMethod]
+	public void TestParseAllNewArguments()
+	{
+		// Arrange
+		string[] args = [
+			"--private", "test.private",
+			"--license", "test.lic",
+			"--lock", "C:\\MyApp\\MyApp.exe",
+			"--product-features", "Color=Blue Edition=Pro",
+			"--license-attributes", "Size=Large Department=Engineering"
+		];
+
+		// Act
+		var result = CliArgumentParser.Parse(args);
+
+		// Assert
+		Assert.AreEqual("C:\\MyApp\\MyApp.exe", result.LockPath);
+		Assert.AreEqual(2, result.ProductFeatures.Count);
+		Assert.AreEqual("Blue", result.ProductFeatures["Color"]);
+		Assert.AreEqual("Pro", result.ProductFeatures["Edition"]);
+		Assert.AreEqual(2, result.LicenseAttributes.Count);
+		Assert.AreEqual("Large", result.LicenseAttributes["Size"]);
+		Assert.AreEqual("Engineering", result.LicenseAttributes["Department"]);
+	}
 }

@@ -21,6 +21,9 @@ public class CliArgumentParser
 	public DateTime? ExpirationDate { get; set; }
 	public string? ProductVersion { get; set; }
 	public DateOnly? ProductPublishDate { get; set; }
+	public string? LockPath { get; set; }
+	public Dictionary<string, string> ProductFeatures { get; set; } = new Dictionary<string, string>();
+	public Dictionary<string, string> LicenseAttributes { get; set; } = new Dictionary<string, string>();
 	
 	public bool HelpRequested { get; set; }
 
@@ -131,6 +134,30 @@ public class CliArgumentParser
 					parser.ProductPublishDate = publishDate;
 					break;
 					
+				case "--lock":
+					if (i + 1 >= args.Length)
+					{
+						throw new ArgumentException("Missing value for --lock argument");
+					}
+					parser.LockPath = args[++i];
+					break;
+					
+				case "--product-features":
+					if (i + 1 >= args.Length)
+					{
+						throw new ArgumentException("Missing value for --product-features argument");
+					}
+					ParseKeyValuePairs(args[++i], parser.ProductFeatures, "product features");
+					break;
+					
+				case "--license-attributes":
+					if (i + 1 >= args.Length)
+					{
+						throw new ArgumentException("Missing value for --license-attributes argument");
+					}
+					ParseKeyValuePairs(args[++i], parser.LicenseAttributes, "license attributes");
+					break;
+					
 				case "--help":
 				case "-h":
 				case "/?":
@@ -143,6 +170,41 @@ public class CliArgumentParser
 		}
 		
 		return parser;
+	}
+
+	/// <summary>
+	/// Parse key=value pairs from a string.
+	/// </summary>
+	/// <param name="input">Input string containing space-separated key=value pairs</param>
+	/// <param name="dictionary">Dictionary to add the parsed pairs to</param>
+	/// <param name="argumentName">Name of the argument for error messages</param>
+	/// <exception cref="ArgumentException">Thrown when parsing fails</exception>
+	private static void ParseKeyValuePairs(string input, Dictionary<string, string> dictionary, string argumentName)
+	{
+		if (string.IsNullOrWhiteSpace(input))
+		{
+			return;
+		}
+		
+		string[] pairs = input.Split(' ', StringSplitOptions.RemoveEmptyEntries);
+		foreach (string pair in pairs)
+		{
+			int equalsIndex = pair.IndexOf('=');
+			if (equalsIndex == -1)
+			{
+				throw new ArgumentException($"Invalid {argumentName} format: '{pair}'. Expected key=value format.");
+			}
+			
+			string key = pair.Substring(0, equalsIndex).Trim();
+			string value = pair.Substring(equalsIndex + 1).Trim();
+			
+			if (string.IsNullOrWhiteSpace(key))
+			{
+				throw new ArgumentException($"Invalid {argumentName} format: '{pair}'. Key cannot be empty.");
+			}
+			
+			dictionary[key] = value;
+		}
 	}
 
 	/// <summary>
@@ -184,9 +246,33 @@ public class CliArgumentParser
 		}
 
 		// Validate mutually exclusive expiration options
-		if (ExpirationDays.HasValue && ExpirationDate.HasValue)
+		if ((ExpirationDays.HasValue) && (ExpirationDate.HasValue))
 		{
 			throw new ArgumentException("Cannot specify both --expiration-days and --expiration-date. Use only one.");
+		}
+		
+		// Validate lock file exists if specified
+		if (!string.IsNullOrWhiteSpace(LockPath) && !File.Exists(LockPath))
+		{
+			throw new ArgumentException($"Lock file does not exist: {LockPath}");
+		}
+		
+		// Validate product features
+		foreach (var feature in ProductFeatures)
+		{
+			if (LicenseManager.IsReservedFeatureName(feature.Key))
+			{
+				throw new ArgumentException($"'{feature.Key}' is a reserved product feature name and cannot be used.");
+			}
+		}
+		
+		// Validate license attributes
+		foreach (var attribute in LicenseAttributes)
+		{
+			if (LicenseManager.IsReservedAttributeName(attribute.Key))
+			{
+				throw new ArgumentException($"'{attribute.Key}' is a reserved license attribute name and cannot be used.");
+			}
 		}
 	}
 
@@ -226,6 +312,40 @@ public class CliArgumentParser
 		{
 			manager.PublishDate = ProductPublishDate.Value;
 		}
+		
+		// Apply lock path if specified
+		if (!string.IsNullOrWhiteSpace(LockPath))
+		{
+			if (manager.PathAssembly != LockPath)
+			{
+				manager.PathAssembly = LockPath;
+				manager.IsLockedToAssembly = true;
+			}
+		}
+		
+		// Apply product features if any specified
+		if (ProductFeatures.Count > 0)
+		{
+			// Create a new dictionary with existing features plus new ones
+			var newFeatures = new Dictionary<string, string>(manager.ProductFeatures);
+			foreach (var feature in ProductFeatures)
+			{
+				newFeatures[feature.Key] = feature.Value;
+			}
+			manager.UpdateProductFeatures(newFeatures);
+		}
+		
+		// Apply license attributes if any specified
+		if (LicenseAttributes.Count > 0)
+		{
+			// Create a new dictionary with existing attributes plus new ones
+			var newAttributes = new Dictionary<string, string>(manager.LicenseAttributes);
+			foreach (var attribute in LicenseAttributes)
+			{
+				newAttributes[attribute.Key] = attribute.Value;
+			}
+			manager.UpdateLicenseAttributes(newAttributes);
+		}
 	}
 
 	/// <summary>
@@ -249,16 +369,25 @@ public class CliArgumentParser
 		Console.WriteLine("  --expiration-date, -dt <date>    Expiration date (YYYY-MM-DD format)");
 		Console.WriteLine("  --product-version, -v <version>  Product version");
 		Console.WriteLine("  --product-publish-date, -pd <date>  Product publish date (YYYY-MM-DD)");
+		Console.WriteLine("  --lock <path>                    Lock license to a specific DLL or EXE file");
+		Console.WriteLine("  --product-features <pairs>       Product features as key=value pairs");
+		Console.WriteLine("  --license-attributes <pairs>     License attributes as key=value pairs");
 		Console.WriteLine("  --help, -h                       Show this help");
 		Console.WriteLine();
 		Console.WriteLine("Examples:");
 		Console.WriteLine("  licensemanager -p my.private -l customer.lic");
 		Console.WriteLine("  licensemanager -p my.private -l trial.lic --type Trial --expiration-days 30");
 		Console.WriteLine("  licensemanager -p my.private -l enterprise.lic --quantity 100 --product-version 2.1.0");
+		Console.WriteLine("  licensemanager -p my.private -l locked.lic --lock C:\\MyApp\\MyApp.exe");
+		Console.WriteLine("  licensemanager -p my.private -l featured.lic --product-features \"Color=Blue Bird=Heron\"");
+		Console.WriteLine("  licensemanager -p my.private -l attributed.lic --license-attributes \"Size=Large Color=Red\"");
 		Console.WriteLine();
 		Console.WriteLine("Notes:");
 		Console.WriteLine("  - If the license file already exists, it will not be overwritten");
 		Console.WriteLine("  - Cannot override: passphrase, keys, product name, customer info");
 		Console.WriteLine("  - Either expiration-days or expiration-date can be specified, not both");
+		Console.WriteLine("  - Key=value pairs should be space-separated: \"key1=value1 key2=value2\"");
+		Console.WriteLine("  - Reserved feature names: Product, Version, Publish Date");
+		Console.WriteLine("  - Reserved attribute names: Product Identity, Assembly Identity, Expiration Days");
 	}
 }
