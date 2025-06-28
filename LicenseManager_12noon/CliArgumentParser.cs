@@ -71,7 +71,7 @@ public class CliArgumentParser
 					break;
 					
 				case "--expiration-days":
-				case "-ed":
+				case "-dy":
 					if (i + 1 >= args.Length)
 						throw new ArgumentException("Missing value for --expiration-days argument");
 					if (!int.TryParse(args[++i], out var expirationDays) || expirationDays < 0)
@@ -196,7 +196,7 @@ public class CliArgumentParser
 		Console.WriteLine("Optional Arguments:");
 		Console.WriteLine("  --type, -t <type>                License type: Standard or Trial");
 		Console.WriteLine("  --quantity, -q <number>          License quantity (positive integer)");
-		Console.WriteLine("  --expiration-days, -ed <days>    Expiration in days (0 = no expiry)");
+		Console.WriteLine("  --expiration-days, -dy <days>    Expiration in days (0 = no expiry)");
 		Console.WriteLine("  --expiration-date, -e <date>     Expiration date (YYYY-MM-DD format)");
 		Console.WriteLine("  --product-version, -v <version>  Product version");
 		Console.WriteLine("  --product-publish-date, -pd <date>  Product publish date (YYYY-MM-DD)");

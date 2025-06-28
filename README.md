@@ -183,7 +183,7 @@ licensemanager --private <path> --license <path> [options]
 
 - `--type, -t <type>` - License type: Standard or Trial
 - `--quantity, -q <number>` - License quantity (positive integer)
-- `--expiration-days, -ed <days>` - Expiration in days (0 = no expiry)
+- `--expiration-days, -dy <days>` - Expiration in days (0 = no expiry)
 - `--expiration-date, -e <date>` - Expiration date (YYYY-MM-DD format)
 - `--product-version, -v <version>` - Product version
 - `--product-publish-date, -pd <date>` - Product publish date (YYYY-MM-DD)
