@@ -2,6 +2,7 @@ using System;
 using System.IO;
 using System.Globalization;
 using Standard.Licensing;
+using LicenseManager_12noon.Client;
 
 namespace LicenseManager_12noon;
 
@@ -80,7 +81,7 @@ public class CliArgumentParser
 					break;
 					
 				case "--expiration-date":
-				case "-e":
+				case "-dt":
 					if (i + 1 >= args.Length)
 						throw new ArgumentException("Missing value for --expiration-date argument");
 					if (!DateTime.TryParse(args[++i], CultureInfo.InvariantCulture, DateTimeStyles.None, out var expirationDate))
@@ -153,7 +154,7 @@ public class CliArgumentParser
 	/// Apply CLI overrides to the license manager.
 	/// </summary>
 	/// <param name="manager">License manager to apply overrides to</param>
-	public void ApplyOverrides(CoreLicenseManager manager)
+	public void ApplyOverrides(LicenseManager manager)
 	{
 		if (LicenseType.HasValue)
 			manager.StandardOrTrial = LicenseType.Value;
@@ -164,12 +165,12 @@ public class CliArgumentParser
 		if (ExpirationDays.HasValue)
 		{
 			manager.ExpirationDays = ExpirationDays.Value;
-			manager.ExpirationDateUTC = DateTime.UtcNow.Date.AddDays(ExpirationDays.Value);
+			// ExpirationDateUTC is automatically updated by the property change handler
 		}
 		else if (ExpirationDate.HasValue)
 		{
 			manager.ExpirationDateUTC = ExpirationDate.Value;
-			manager.ExpirationDays = (int)(ExpirationDate.Value - DateTime.UtcNow.Date).TotalDays;
+			manager.ExpirationDays = (int)(ExpirationDate.Value - MyNow.UtcNow().Date).TotalDays;
 		}
 			
 		if (!string.IsNullOrWhiteSpace(ProductVersion))
@@ -197,7 +198,7 @@ public class CliArgumentParser
 		Console.WriteLine("  --type, -t <type>                License type: Standard or Trial");
 		Console.WriteLine("  --quantity, -q <number>          License quantity (positive integer)");
 		Console.WriteLine("  --expiration-days, -dy <days>    Expiration in days (0 = no expiry)");
-		Console.WriteLine("  --expiration-date, -e <date>     Expiration date (YYYY-MM-DD format)");
+		Console.WriteLine("  --expiration-date, -dt <date>    Expiration date (YYYY-MM-DD format)");
 		Console.WriteLine("  --product-version, -v <version>  Product version");
 		Console.WriteLine("  --product-publish-date, -pd <date>  Product publish date (YYYY-MM-DD)");
 		Console.WriteLine("  --help, -h                       Show this help");

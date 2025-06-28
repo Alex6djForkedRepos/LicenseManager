@@ -181,7 +181,7 @@ public class CliArgumentParserTest
 	public void TestApplyOverrides()
 	{
 		// Arrange
-		var manager = new CoreLicenseManager
+		var manager = new LicenseManager
 		{
 			StandardOrTrial = LicenseType.Standard,
 			Quantity = 1,
@@ -213,7 +213,7 @@ public class CliArgumentParserTest
 	public void TestApplyExpirationDateOverride()
 	{
 		// Arrange
-		var manager = new CoreLicenseManager();
+		var manager = new LicenseManager();
 		var expirationDate = DateTime.UtcNow.Date.AddDays(45);
 		
 		var parser = new CliArgumentParser

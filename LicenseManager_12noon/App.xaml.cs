@@ -55,7 +55,7 @@ public partial class App : Application
 			parsedArgs.Validate();
 			
 			// Create license manager and load private file
-			var manager = new CoreLicenseManager();
+			var manager = new LicenseManager();
 			
 			Console.WriteLine($"Loading private file: {parsedArgs.PrivateFilePath}");
 			manager.LoadKeypair(parsedArgs.PrivateFilePath);

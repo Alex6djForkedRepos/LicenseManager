@@ -170,7 +170,7 @@ Once you have created a `.private` file using the GUI, you can use the command l
 
 #### Usage
 
-```bash
+```cmd
 licensemanager --private <path> --license <path> [options]
 ```
 
@@ -184,21 +184,21 @@ licensemanager --private <path> --license <path> [options]
 - `--type, -t <type>` - License type: Standard or Trial
 - `--quantity, -q <number>` - License quantity (positive integer)
 - `--expiration-days, -dy <days>` - Expiration in days (0 = no expiry)
-- `--expiration-date, -e <date>` - Expiration date (YYYY-MM-DD format)
+- `--expiration-date, -dt <date>` - Expiration date (YYYY-MM-DD format)
 - `--product-version, -v <version>` - Product version
 - `--product-publish-date, -pd <date>` - Product publish date (YYYY-MM-DD)
 - `--help, -h` - Show help
 
 #### Examples
 
-```bash
-# Create a standard license using default settings from .private file
+```cmd
+REM Create a standard license using default settings from .private file
 licensemanager -p my.private -l customer.lic
 
-# Create a 30-day trial license
+REM Create a 30-day trial license
 licensemanager -p my.private -l trial.lic --type Trial --expiration-days 30
 
-# Create an enterprise license with custom quantity and version
+REM Create an enterprise license with custom quantity and version
 licensemanager -p my.private -l enterprise.lic --quantity 100 --product-version 2.1.0
 ```
 
