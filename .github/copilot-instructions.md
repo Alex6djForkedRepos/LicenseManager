@@ -7,4 +7,7 @@ Prefer to use explicit type instead of var.
 Prefer to assign new() or [] where possible.
 Use tabs instead of spaces, even in XAML. A tab is equivalent to three spaces.
 Use braces around single-line expressions.
+Use parentheses around conditional expressions.
 Add a comma after the last item in an initializer list.
+
+Do not add build artifacts to git. Ignore directories such as bin/ and obj/.
