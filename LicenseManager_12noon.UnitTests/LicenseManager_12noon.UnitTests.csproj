@@ -1,7 +1,7 @@
 ﻿<Project Sdk="MSTest.Sdk/3.6.3">
 
   <PropertyGroup>
-    <TargetFramework>net8.0-windows</TargetFramework>
+    <TargetFramework>net9.0-windows</TargetFramework>
     <Platforms>x64</Platforms>
 
     <Nullable>enable</Nullable>
@@ -14,7 +14,6 @@
 
   <ItemGroup>
     <ProjectReference Include="..\LicenseManager_12noon\LicenseManager_12noon.csproj" />
-    <ProjectReference Include="..\LicenseManager_12noon.CLI\LicenseManager_12noon.CLI.csproj" />
   </ItemGroup>
 
   <ItemGroup>

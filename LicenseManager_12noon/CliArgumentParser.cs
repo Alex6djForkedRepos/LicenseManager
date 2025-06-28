@@ -1,8 +1,9 @@
-using System;
-using System.IO;
-using System.Globalization;
-using Standard.Licensing;
 using LicenseManager_12noon.Client;
+using Standard.Licensing;
+using System;
+using System.Collections.Generic;
+using System.Globalization;
+using System.IO;
 
 namespace LicenseManager_12noon;
 
@@ -13,7 +14,7 @@ public class CliArgumentParser
 {
 	public string PrivateFilePath { get; set; } = string.Empty;
 	public string LicenseFilePath { get; set; } = string.Empty;
-	
+
 	// Optional overrides
 	public LicenseType? LicenseType { get; set; }
 	public int? Quantity { get; set; }
@@ -22,9 +23,9 @@ public class CliArgumentParser
 	public string? ProductVersion { get; set; }
 	public DateOnly? ProductPublishDate { get; set; }
 	public string? LockPath { get; set; }
-	public Dictionary<string, string> ProductFeatures { get; set; } = new Dictionary<string, string>();
-	public Dictionary<string, string> LicenseAttributes { get; set; } = new Dictionary<string, string>();
-	
+	public Dictionary<string, string> ProductFeatures { get; set; } = [];
+	public Dictionary<string, string> LicenseAttributes { get; set; } = [];
+
 	public bool HelpRequested { get; set; }
 
 	/// <summary>
@@ -36,7 +37,7 @@ public class CliArgumentParser
 	public static CliArgumentParser Parse(string[] args)
 	{
 		var parser = new CliArgumentParser();
-		
+
 		for (int i = 0; i < args.Length; i++)
 		{
 			switch (args[i].ToLowerInvariant())
@@ -49,7 +50,7 @@ public class CliArgumentParser
 					}
 					parser.PrivateFilePath = args[++i];
 					break;
-					
+
 				case "--license":
 				case "-l":
 					if (i + 1 >= args.Length)
@@ -58,7 +59,7 @@ public class CliArgumentParser
 					}
 					parser.LicenseFilePath = args[++i];
 					break;
-					
+
 				case "--type":
 				case "-t":
 					if (i + 1 >= args.Length)
@@ -72,7 +73,7 @@ public class CliArgumentParser
 					}
 					parser.LicenseType = licenseType;
 					break;
-					
+
 				case "--quantity":
 				case "-q":
 					if (i + 1 >= args.Length)
@@ -85,7 +86,7 @@ public class CliArgumentParser
 					}
 					parser.Quantity = quantity;
 					break;
-					
+
 				case "--expiration-days":
 				case "-dy":
 					if (i + 1 >= args.Length)
@@ -98,7 +99,7 @@ public class CliArgumentParser
 					}
 					parser.ExpirationDays = expirationDays;
 					break;
-					
+
 				case "--expiration-date":
 				case "-dt":
 					if (i + 1 >= args.Length)
@@ -111,7 +112,7 @@ public class CliArgumentParser
 					}
 					parser.ExpirationDate = expirationDate;
 					break;
-					
+
 				case "--product-version":
 				case "-v":
 					if (i + 1 >= args.Length)
@@ -120,7 +121,7 @@ public class CliArgumentParser
 					}
 					parser.ProductVersion = args[++i];
 					break;
-					
+
 				case "--product-publish-date":
 				case "-pd":
 					if (i + 1 >= args.Length)
@@ -133,7 +134,7 @@ public class CliArgumentParser
 					}
 					parser.ProductPublishDate = publishDate;
 					break;
-					
+
 				case "--lock":
 					if (i + 1 >= args.Length)
 					{
@@ -141,7 +142,7 @@ public class CliArgumentParser
 					}
 					parser.LockPath = args[++i];
 					break;
-					
+
 				case "--product-features":
 					if (i + 1 >= args.Length)
 					{
@@ -149,7 +150,7 @@ public class CliArgumentParser
 					}
 					ParseKeyValuePairs(args[++i], parser.ProductFeatures, "product features");
 					break;
-					
+
 				case "--license-attributes":
 					if (i + 1 >= args.Length)
 					{
@@ -157,18 +158,18 @@ public class CliArgumentParser
 					}
 					ParseKeyValuePairs(args[++i], parser.LicenseAttributes, "license attributes");
 					break;
-					
+
 				case "--help":
 				case "-h":
 				case "/?":
 					parser.HelpRequested = true;
 					break;
-					
+
 				default:
 					throw new ArgumentException($"Unknown argument: {args[i]}");
 			}
 		}
-		
+
 		return parser;
 	}
 
@@ -185,7 +186,7 @@ public class CliArgumentParser
 		{
 			return;
 		}
-		
+
 		string[] pairs = input.Split(' ', StringSplitOptions.RemoveEmptyEntries);
 		foreach (string pair in pairs)
 		{
@@ -194,15 +195,15 @@ public class CliArgumentParser
 			{
 				throw new ArgumentException($"Invalid {argumentName} format: '{pair}'. Expected key=value format.");
 			}
-			
-			string key = pair.Substring(0, equalsIndex).Trim();
-			string value = pair.Substring(equalsIndex + 1).Trim();
-			
+
+			string key = pair[..equalsIndex].Trim();
+			string value = pair[(equalsIndex + 1)..].Trim();
+
 			if (string.IsNullOrWhiteSpace(key))
 			{
 				throw new ArgumentException($"Invalid {argumentName} format: '{pair}'. Key cannot be empty.");
 			}
-			
+
 			dictionary[key] = value;
 		}
 	}
@@ -217,27 +218,27 @@ public class CliArgumentParser
 		{
 			return;
 		}
-			
+
 		if (string.IsNullOrWhiteSpace(PrivateFilePath))
 		{
 			throw new ArgumentException("Private file path is required. Use --private or -p argument.");
 		}
-			
+
 		if (string.IsNullOrWhiteSpace(LicenseFilePath))
 		{
 			throw new ArgumentException("License file path is required. Use --license or -l argument.");
 		}
-			
+
 		if (!File.Exists(PrivateFilePath))
 		{
 			throw new ArgumentException($"Private file does not exist: {PrivateFilePath}");
 		}
-			
+
 		if (File.Exists(LicenseFilePath))
 		{
 			throw new ArgumentException($"License file already exists and will not be overwritten: {LicenseFilePath}");
 		}
-			
+
 		// Make sure directory exists for the license file
 		string? licenseDir = Path.GetDirectoryName(LicenseFilePath);
 		if (!string.IsNullOrEmpty(licenseDir) && !Directory.Exists(licenseDir))
@@ -250,13 +251,13 @@ public class CliArgumentParser
 		{
 			throw new ArgumentException("Cannot specify both --expiration-days and --expiration-date. Use only one.");
 		}
-		
+
 		// Validate lock file exists if specified
 		if (!string.IsNullOrWhiteSpace(LockPath) && !File.Exists(LockPath))
 		{
 			throw new ArgumentException($"Lock file does not exist: {LockPath}");
 		}
-		
+
 		// Validate product features
 		foreach (var feature in ProductFeatures)
 		{
@@ -265,7 +266,7 @@ public class CliArgumentParser
 				throw new ArgumentException($"'{feature.Key}' is a reserved product feature name and cannot be used.");
 			}
 		}
-		
+
 		// Validate license attributes
 		foreach (var attribute in LicenseAttributes)
 		{
@@ -286,12 +287,12 @@ public class CliArgumentParser
 		{
 			manager.StandardOrTrial = LicenseType.Value;
 		}
-			
+
 		if ((Quantity.HasValue) && (manager.Quantity != Quantity.Value))
 		{
 			manager.Quantity = Quantity.Value;
 		}
-			
+
 		if ((ExpirationDays.HasValue) && (manager.ExpirationDays != ExpirationDays.Value))
 		{
 			manager.ExpirationDays = ExpirationDays.Value;
@@ -302,17 +303,17 @@ public class CliArgumentParser
 			manager.ExpirationDateUTC = ExpirationDate.Value;
 			manager.ExpirationDays = (int)(ExpirationDate.Value - MyNow.UtcNow().Date).TotalDays;
 		}
-			
+
 		if ((!string.IsNullOrWhiteSpace(ProductVersion)) && (manager.Version != ProductVersion))
 		{
 			manager.Version = ProductVersion;
 		}
-			
+
 		if ((ProductPublishDate.HasValue) && (manager.PublishDate != ProductPublishDate.Value))
 		{
 			manager.PublishDate = ProductPublishDate.Value;
 		}
-		
+
 		// Apply lock path if specified
 		if (!string.IsNullOrWhiteSpace(LockPath))
 		{
@@ -322,7 +323,7 @@ public class CliArgumentParser
 				manager.IsLockedToAssembly = true;
 			}
 		}
-		
+
 		// Apply product features if any specified
 		if (ProductFeatures.Count > 0)
 		{
@@ -334,7 +335,7 @@ public class CliArgumentParser
 			}
 			manager.UpdateProductFeatures(newFeatures);
 		}
-		
+
 		// Apply license attributes if any specified
 		if (LicenseAttributes.Count > 0)
 		{
