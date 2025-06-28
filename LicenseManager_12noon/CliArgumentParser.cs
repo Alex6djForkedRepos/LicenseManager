@@ -41,67 +41,93 @@ public class CliArgumentParser
 				case "--private":
 				case "-p":
 					if (i + 1 >= args.Length)
+					{
 						throw new ArgumentException("Missing value for --private argument");
+					}
 					parser.PrivateFilePath = args[++i];
 					break;
 					
 				case "--license":
 				case "-l":
 					if (i + 1 >= args.Length)
+					{
 						throw new ArgumentException("Missing value for --license argument");
+					}
 					parser.LicenseFilePath = args[++i];
 					break;
 					
 				case "--type":
 				case "-t":
 					if (i + 1 >= args.Length)
+					{
 						throw new ArgumentException("Missing value for --type argument");
+					}
 					string typeValue = args[++i];
 					if (!Enum.TryParse<LicenseType>(typeValue, true, out var licenseType))
+					{
 						throw new ArgumentException($"Invalid license type '{typeValue}'. Valid values: Standard, Trial");
+					}
 					parser.LicenseType = licenseType;
 					break;
 					
 				case "--quantity":
 				case "-q":
 					if (i + 1 >= args.Length)
+					{
 						throw new ArgumentException("Missing value for --quantity argument");
+					}
 					if (!int.TryParse(args[++i], out var quantity) || quantity < 1)
+					{
 						throw new ArgumentException("Quantity must be a positive integer");
+					}
 					parser.Quantity = quantity;
 					break;
 					
 				case "--expiration-days":
 				case "-dy":
 					if (i + 1 >= args.Length)
+					{
 						throw new ArgumentException("Missing value for --expiration-days argument");
+					}
 					if (!int.TryParse(args[++i], out var expirationDays) || expirationDays < 0)
+					{
 						throw new ArgumentException("Expiration days must be zero or a positive integer");
+					}
 					parser.ExpirationDays = expirationDays;
 					break;
 					
 				case "--expiration-date":
 				case "-dt":
 					if (i + 1 >= args.Length)
+					{
 						throw new ArgumentException("Missing value for --expiration-date argument");
+					}
 					if (!DateTime.TryParse(args[++i], CultureInfo.InvariantCulture, DateTimeStyles.None, out var expirationDate))
+					{
 						throw new ArgumentException("Invalid expiration date format. Use YYYY-MM-DD or MM/DD/YYYY format");
+					}
 					parser.ExpirationDate = expirationDate;
 					break;
 					
 				case "--product-version":
 				case "-v":
 					if (i + 1 >= args.Length)
+					{
 						throw new ArgumentException("Missing value for --product-version argument");
+					}
 					parser.ProductVersion = args[++i];
 					break;
 					
 				case "--product-publish-date":
 				case "-pd":
 					if (i + 1 >= args.Length)
+					{
 						throw new ArgumentException("Missing value for --product-publish-date argument");
+					}
 					if (!DateOnly.TryParse(args[++i], CultureInfo.InvariantCulture, DateTimeStyles.None, out var publishDate))
+					{
 						throw new ArgumentException("Invalid product publish date format. Use YYYY-MM-DD format");
+					}
 					parser.ProductPublishDate = publishDate;
 					break;
 					
@@ -126,28 +152,42 @@ public class CliArgumentParser
 	public void Validate()
 	{
 		if (HelpRequested)
+		{
 			return;
+		}
 			
 		if (string.IsNullOrWhiteSpace(PrivateFilePath))
+		{
 			throw new ArgumentException("Private file path is required. Use --private or -p argument.");
+		}
 			
 		if (string.IsNullOrWhiteSpace(LicenseFilePath))
+		{
 			throw new ArgumentException("License file path is required. Use --license or -l argument.");
+		}
 			
 		if (!File.Exists(PrivateFilePath))
+		{
 			throw new ArgumentException($"Private file does not exist: {PrivateFilePath}");
+		}
 			
 		if (File.Exists(LicenseFilePath))
+		{
 			throw new ArgumentException($"License file already exists and will not be overwritten: {LicenseFilePath}");
+		}
 			
 		// Make sure directory exists for the license file
 		string? licenseDir = Path.GetDirectoryName(LicenseFilePath);
 		if (!string.IsNullOrEmpty(licenseDir) && !Directory.Exists(licenseDir))
+		{
 			throw new ArgumentException($"Directory does not exist for license file: {licenseDir}");
+		}
 
 		// Validate mutually exclusive expiration options
 		if (ExpirationDays.HasValue && ExpirationDate.HasValue)
+		{
 			throw new ArgumentException("Cannot specify both --expiration-days and --expiration-date. Use only one.");
+		}
 	}
 
 	/// <summary>
@@ -156,28 +196,36 @@ public class CliArgumentParser
 	/// <param name="manager">License manager to apply overrides to</param>
 	public void ApplyOverrides(LicenseManager manager)
 	{
-		if (LicenseType.HasValue)
+		if (LicenseType.HasValue && manager.StandardOrTrial != LicenseType.Value)
+		{
 			manager.StandardOrTrial = LicenseType.Value;
+		}
 			
-		if (Quantity.HasValue)
+		if (Quantity.HasValue && manager.Quantity != Quantity.Value)
+		{
 			manager.Quantity = Quantity.Value;
+		}
 			
-		if (ExpirationDays.HasValue)
+		if (ExpirationDays.HasValue && manager.ExpirationDays != ExpirationDays.Value)
 		{
 			manager.ExpirationDays = ExpirationDays.Value;
 			// ExpirationDateUTC is automatically updated by the property change handler
 		}
-		else if (ExpirationDate.HasValue)
+		else if (ExpirationDate.HasValue && manager.ExpirationDateUTC != ExpirationDate.Value)
 		{
 			manager.ExpirationDateUTC = ExpirationDate.Value;
 			manager.ExpirationDays = (int)(ExpirationDate.Value - MyNow.UtcNow().Date).TotalDays;
 		}
 			
-		if (!string.IsNullOrWhiteSpace(ProductVersion))
+		if (!string.IsNullOrWhiteSpace(ProductVersion) && manager.Version != ProductVersion)
+		{
 			manager.Version = ProductVersion;
+		}
 			
-		if (ProductPublishDate.HasValue)
+		if (ProductPublishDate.HasValue && manager.PublishDate != ProductPublishDate.Value)
+		{
 			manager.PublishDate = ProductPublishDate.Value;
+		}
 	}
 
 	/// <summary>

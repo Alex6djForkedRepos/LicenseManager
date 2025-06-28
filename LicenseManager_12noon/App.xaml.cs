@@ -80,17 +80,29 @@ public partial class App : Application
 				Console.WriteLine();
 				Console.WriteLine("Applied CLI overrides:");
 				if (parsedArgs.LicenseType.HasValue)
+				{
 					Console.WriteLine($"  License Type: {manager.StandardOrTrial}");
+				}
 				if (parsedArgs.Quantity.HasValue)
+				{
 					Console.WriteLine($"  Quantity: {manager.Quantity}");
+				}
 				if (parsedArgs.ExpirationDays.HasValue)
+				{
 					Console.WriteLine($"  Expiration Days: {manager.ExpirationDays}");
+				}
 				if (parsedArgs.ExpirationDate.HasValue)
+				{
 					Console.WriteLine($"  Expiration Date: {manager.ExpirationDateUTC:yyyy-MM-dd}");
+				}
 				if (!string.IsNullOrEmpty(parsedArgs.ProductVersion))
+				{
 					Console.WriteLine($"  Product Version: {manager.Version}");
+				}
 				if (parsedArgs.ProductPublishDate.HasValue)
+				{
 					Console.WriteLine($"  Product Publish Date: {manager.PublishDate}");
+				}
 			}
 			
 			// Create license file

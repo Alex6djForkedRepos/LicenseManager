@@ -228,4 +228,120 @@ public class CliArgumentParserTest
 		Assert.AreEqual(expirationDate, manager.ExpirationDateUTC);
 		Assert.AreEqual(45, manager.ExpirationDays);
 	}
+
+	[TestMethod]
+	public void TestApplyOverrides_NoChangeWhenValuesAreSame()
+	{
+		// Arrange
+		var manager = new LicenseManager
+		{
+			StandardOrTrial = LicenseType.Trial,
+			Quantity = 5,
+			ExpirationDays = 30,
+			Version = "2.1.0"
+		};
+
+		var parser = new CliArgumentParser
+		{
+			LicenseType = LicenseType.Trial,  // Same value
+			Quantity = 5,                    // Same value
+			ExpirationDays = 30,             // Same value
+			ProductVersion = "2.1.0"         // Same value
+		};
+
+		// Act
+		parser.ApplyOverrides(manager);
+
+		// Assert - Values should remain the same
+		Assert.AreEqual(LicenseType.Trial, manager.StandardOrTrial);
+		Assert.AreEqual(5, manager.Quantity);
+		Assert.AreEqual(30, manager.ExpirationDays);
+		Assert.AreEqual("2.1.0", manager.Version);
+	}
+
+	[TestMethod]
+	public void TestApplyOverrides_ChangesOnlyDifferentValues()
+	{
+		// Arrange
+		var manager = new LicenseManager
+		{
+			StandardOrTrial = LicenseType.Standard,
+			Quantity = 1,
+			ExpirationDays = 0,
+			Version = "1.0.0"
+		};
+
+		var parser = new CliArgumentParser
+		{
+			LicenseType = LicenseType.Standard,  // Same - should not trigger change
+			Quantity = 5,                       // Different - should trigger change
+			ExpirationDays = 0,                 // Same - should not trigger change
+			ProductVersion = "2.1.0"            // Different - should trigger change
+		};
+
+		// Act
+		parser.ApplyOverrides(manager);
+
+		// Assert
+		Assert.AreEqual(LicenseType.Standard, manager.StandardOrTrial);  // Unchanged
+		Assert.AreEqual(5, manager.Quantity);                          // Changed
+		Assert.AreEqual(0, manager.ExpirationDays);                    // Unchanged
+		Assert.AreEqual("2.1.0", manager.Version);                     // Changed
+	}
+
+	[TestMethod]
+	public void TestApplyOverrides_ExpirationDateComparison()
+	{
+		// Arrange
+		var existingDate = DateTime.UtcNow.Date.AddDays(30);
+		var manager = new LicenseManager();
+		manager.ExpirationDateUTC = existingDate;
+
+		var parser1 = new CliArgumentParser
+		{
+			ExpirationDate = existingDate  // Same date
+		};
+
+		var parser2 = new CliArgumentParser
+		{
+			ExpirationDate = existingDate.AddDays(15)  // Different date
+		};
+
+		// Act & Assert - Same date should not change anything
+		parser1.ApplyOverrides(manager);
+		Assert.AreEqual(existingDate, manager.ExpirationDateUTC);
+
+		// Act & Assert - Different date should change the value
+		parser2.ApplyOverrides(manager);
+		Assert.AreEqual(existingDate.AddDays(15), manager.ExpirationDateUTC);
+	}
+
+	[TestMethod]
+	public void TestApplyOverrides_PublishDateComparison()
+	{
+		// Arrange
+		var existingDate = new DateOnly(2023, 6, 1);
+		var manager = new LicenseManager
+		{
+			PublishDate = existingDate
+		};
+
+		var parser1 = new CliArgumentParser
+		{
+			ProductPublishDate = existingDate  // Same date
+		};
+
+		var parser2 = new CliArgumentParser
+		{
+			ProductPublishDate = new DateOnly(2023, 12, 1)  // Different date
+		};
+
+		// Act & Assert - Same date should not change anything
+		parser1.ApplyOverrides(manager);
+		Assert.AreEqual(existingDate, manager.PublishDate);
+
+		// Act & Assert - Different date should change the value
+		parser2.ApplyOverrides(manager);
+		Assert.AreEqual(new DateOnly(2023, 12, 1), manager.PublishDate);
+	}
 }
