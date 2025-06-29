@@ -162,6 +162,83 @@ prompt you for where to save the `.private` file.
 1. Press the _Save License..._ button to create a new license. This will
 prompt you for where to save the `.lic` file.
 
+### Command Line Interface
+
+The License Manager application includes a built-in command line interface. The same executable can run in both GUI mode (when launched without arguments) and CLI mode (when arguments are provided).
+
+Once you have created a `.private` file using the GUI, you can use the command line interface to generate new license files more efficiently.
+
+#### Usage
+
+```cmd
+licensemanager --private <path> --license <path> [options]
+```
+
+#### Required Arguments
+
+- `--private, -p <path>` - Path to the `.private` file
+- `--license, -l <path>` - Path to the new `.lic` file (must not exist)
+
+#### Optional Arguments
+
+- `--type, -t <type>` - License type: Standard or Trial
+- `--quantity, -q <number>` - License quantity (positive integer)
+- `--expiration-days, -dy <days>` - Expiration in days (0 = no expiry)
+- `--expiration-date, -dt <date>` - Expiration date (YYYY-MM-DD format)
+- `--product-version, -v <version>` - Product version
+- `--product-publish-date, -pd <date>` - Product publish date (YYYY-MM-DD)
+- `--lock <path>` - Lock license to a specific DLL or EXE file
+- `--product-features <pairs>` - Product features as key=value pairs
+- `--license-attributes <pairs>` - License attributes as key=value pairs
+- `--help, -h` - Show help
+
+#### Examples
+
+```cmd
+REM Create a standard license using default settings from .private file
+licensemanager -p my.private -l customer.lic
+
+REM Create a 30-day trial license
+licensemanager -p my.private -l trial.lic --type Trial --expiration-days 30
+
+REM Create an enterprise license with custom quantity and version
+licensemanager -p my.private -l enterprise.lic --quantity 100 --product-version 2.1.0
+
+REM Create a license locked to a specific executable
+licensemanager -p my.private -l locked.lic --lock C:\MyApp\MyApp.exe
+
+REM Create a license with custom product features
+licensemanager -p my.private -l featured.lic --product-features "Color=Blue Bird=Heron MaxUsers=50"
+
+REM Create a license with custom attributes
+licensemanager -p my.private -l attributed.lic --license-attributes "Department=Engineering Location=Seattle"
+
+REM Combine multiple options
+licensemanager -p my.private -l full.lic --type Trial --expiration-days 30 --lock C:\MyApp\MyApp.exe --product-features "Edition=Pro" --license-attributes "CustomerTier=Gold"
+```
+
+#### Key=Value Format
+
+For `--product-features` and `--license-attributes`, use space-separated key=value pairs:
+- Format: `"key1=value1 key2=value2 key3=value3"`
+- Keys cannot be empty
+- Values can be empty: `"Key="`
+- Spaces in values are not supported (use quotes around individual pairs if needed)
+
+#### Security Notes
+
+The CLI **cannot** override these protected properties from the `.private` file:
+- Passphrase
+- Public or private keys  
+- Product name
+- Customer name, email, or company
+
+**Reserved Names:**
+- Product features cannot use: `Product`, `Version`, `Publish Date`
+- License attributes cannot use: `Product Identity`, `Assembly Identity`, `Expiration Days`
+
+If the license file already exists, it will not be overwritten and an error will be displayed.
+
 ### The Licensed Application
 
 Install the `LicenseManager_12noon.Client` NuGet package in your application.

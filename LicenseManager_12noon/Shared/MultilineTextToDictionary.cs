@@ -22,7 +22,7 @@ public static class MultilineTextToDictionary
 
 		string[] lines = text.Split(Environment.NewLine, StringSplitOptions.RemoveEmptyEntries);
 
-		foreach (var line in lines)
+		foreach (string line in lines)
 		{
 			string trimmedLine = line.Trim();
 			if (string.IsNullOrEmpty(trimmedLine))
@@ -34,23 +34,23 @@ public static class MultilineTextToDictionary
 			string val;
 			// Find first equals sign
 			int equalsIndex = trimmedLine.IndexOf('=');
-			if (equalsIndex >= 0)
+			if (equalsIndex == 0)
 			{
-				key = trimmedLine.Substring(0, equalsIndex).Trim();
+				// Equals sign is the first character, so key is empty; skip this line
+				continue;
+			}
+			else if (equalsIndex > 0) // Only allow if key is not empty
+			{
+				key = trimmedLine[..equalsIndex].Trim();
 				val = (equalsIndex < trimmedLine.Length - 1)
-						? trimmedLine.Substring(equalsIndex + 1).Trim()
-						: string.Empty;
+						  ? trimmedLine[(equalsIndex + 1)..].Trim()
+						  : string.Empty;
 			}
 			else
 			{
 				// No equals sign, treat the whole line as a key with an empty value
-				key = trimmedLine.Trim();
+				key = trimmedLine;
 				val = string.Empty;
-			}
-
-			if (string.IsNullOrEmpty(key))
-			{
-				continue; // Skip empty keys
 			}
 
 			dictionary[key] = val;
