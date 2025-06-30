@@ -51,6 +51,7 @@ artifacts/
 #
 # Project-specific
 #
-IMAGES/
-LicenseManager_12noon.Package/
 Directory.Build.Props
+LicenseManager_12noon.Package/Package.StoreAssociation.xml
+LicenseManager_12noon.Package/Screenshots/
+IMAGES/

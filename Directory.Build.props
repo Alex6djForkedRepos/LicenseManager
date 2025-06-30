@@ -2,9 +2,9 @@
 	<PropertyGroup>
 		<Company>12noon LLC</Company>
 		<Copyright>(c) 2024-2025 12noon LLC</Copyright>
-		<Product>12noon License Manager</Product>
-		<VersionPrefix>2.2.0</VersionPrefix>
-		<FileVersion>2.2.0.0</FileVersion>
-		<AssemblyVersion>2.2.0</AssemblyVersion>
+		<Product>12noon License Manager X</Product>
+		<VersionPrefix>2.3.2</VersionPrefix>
+		<FileVersion>2.3.2.0</FileVersion>
+		<AssemblyVersion>2.3.2</AssemblyVersion>
 	</PropertyGroup>
 </Project>
