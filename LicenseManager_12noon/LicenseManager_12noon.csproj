@@ -1,7 +1,7 @@
 ﻿<Project Sdk="Microsoft.NET.Sdk">
 
   <PropertyGroup>
-    <OutputType>Exe</OutputType>
+    <OutputType>WinExe</OutputType>
     <TargetFramework>net9.0-windows</TargetFramework>
     <RootNamespace>LicenseManager_12noon</RootNamespace>
     <Nullable>enable</Nullable>
@@ -10,6 +10,7 @@
     <Platforms>x64</Platforms>
     <PackageIcon />
     <ApplicationIcon>lock.ico</ApplicationIcon>
+    <AllowUnsafeBlocks>true</AllowUnsafeBlocks>
   </PropertyGroup>
 
   <ItemGroup>

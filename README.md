@@ -1,4 +1,4 @@
-# License Manager by [12noon LLC](https://12noon.com)
+# License Manager X by [12noon LLC](https://12noon.com)
 
 [![](https://img.shields.io/github/v/release/skst/LicenseManager.svg?label=latest%20release&color=007edf)](https://github.com/skst/LicenseManager/releases/latest)
 [![build](https://github.com/skst/LicenseManager/actions/workflows/dotnet.yml/badge.svg)](https://github.com/skst/LicenseManager/actions/workflows/dotnet.yml)
@@ -7,7 +7,7 @@
 [![NuGet Version](https://img.shields.io/nuget/v/LicenseManager_12noon.Client.svg?style=for-the-badge)](https://nuget.org/packages/LicenseManager_12noon.Client)
 [![NuGet Downloads](https://img.shields.io/nuget/dt/LicenseManager_12noon.Client.svg?style=for-the-badge)](https://nuget.org/packages/LicenseManager_12noon.Client)
 
-This is a graphical front-end for the [Standard.Licensing](https://github.com/junian/Standard.Licensing) project.
+License Manager X is a graphical front-end for the [Standard.Licensing](https://github.com/junian/Standard.Licensing) project.
 
 The optional [LicenseManager_12noon.Client NuGet package](https://nuget.org/packages/LicenseManager_12noon.Client)
 has an improved API to validate licenses in your application.
@@ -18,18 +18,20 @@ which has fixes for the `Expiration` property.
 When those fixes are incorporated into the original **Standard.Licensing** project, the
 **Standard.Licensing.12noon** package will be deprecated.
 
+License Manager X can also be used from a command line for scripting, etc.
 
-![License Manager](https://raw.githubusercontent.com/skst/LicenseManager/master/LicenseManager_12noon.png)
+
+![License Manager X](https://raw.githubusercontent.com/skst/LicenseManager/master/LicenseManager_12noon.png)
 
 ## Description
 
-**License Manager** is a graphical front-end application designed to create and manage
+**License Manager X** is a graphical front-end application designed to create and manage
 licenses for software applications using .NET.
 It leverages the **Standard.Licensing** project to handle license generation and validation.
 
 This project ensures that software licenses are securely generated and validated, providing a robust mechanism for software protection.
 
-You can download the License Manager application from the Microsoft Store, and it will be updated automatically.
+You can download the License Manager X application from the Microsoft Store, and it will be updated automatically.
 
 <a href="https://apps.microsoft.com/store/detail/9PFBGG44SHLM?launch=true&mode=full">
 	<img width="300" src="https://get.microsoft.com/images/en-us%20dark.svg"/>
@@ -152,7 +154,7 @@ You will need it to create more licenses for your licensed application
 
 1. Press the *Load Keypair or License or Both...* button to select a `.private` or
 `.lic` file (or both of them). Alternatively, you can drag/drop a `.private` and/or `.lic` file.
-1. After loading both files, License Manager will validate the license file.
+1. After loading both files, License Manager X will validate the license file.
 
 If the license is invalid (_e.g._, it expired or the assembly has changed), you can create a new (valid) license.
 
@@ -164,57 +166,63 @@ prompt you for where to save the `.lic` file.
 
 ### Command Line Interface
 
-The License Manager application includes a built-in command line interface. The same executable can run in both GUI mode (when launched without arguments) and CLI mode (when arguments are provided).
+The License Manager X application includes a built-in command line interface. The same executable can run in both GUI mode (when launched without arguments) and CLI mode (when arguments are provided).
 
 Once you have created a `.private` file using the GUI, you can use the command line interface to generate new license files more efficiently.
 
 #### Usage
 
+`lmx` is the Windows app execution alias for License Manager X. You can manage this in Windows Settings.
+
 ```cmd
-licensemanager --private <path> --license <path> [options]
+lmx --private <path> --license <path> [options]
 ```
 
 #### Required Arguments
 
 - `--private, -p <path>` - Path to the `.private` file
+
+#### One or More Arguments is Required
+
 - `--license, -l <path>` - Path to the new `.lic` file (must not exist)
+- `--save, -s` - Save the modified properties to the `.private` file
 
 #### Optional Arguments
 
+- `--product-version, -v <version>` - Product version
+- `--product-publish-date, -pd <date>` - Product publish date (YYYY-MM-DD)
+- `--product-features, -pf <pairs>` - Product features as key=value pairs
 - `--type, -t <type>` - License type: Standard or Trial
 - `--quantity, -q <number>` - License quantity (positive integer)
 - `--expiration-days, -dy <days>` - Expiration in days (0 = no expiry)
 - `--expiration-date, -dt <date>` - Expiration date (YYYY-MM-DD format)
-- `--product-version, -v <version>` - Product version
-- `--product-publish-date, -pd <date>` - Product publish date (YYYY-MM-DD)
+- `--license-attributes, -la <pairs>` - License attributes as key=value pairs
 - `--lock <path>` - Lock license to a specific DLL or EXE file
-- `--product-features <pairs>` - Product features as key=value pairs
-- `--license-attributes <pairs>` - License attributes as key=value pairs
 - `--help, -h` - Show help
 
 #### Examples
 
 ```cmd
 REM Create a standard license using default settings from .private file
-licensemanager -p my.private -l customer.lic
+lmx -p my.private -l customer.lic
 
 REM Create a 30-day trial license
-licensemanager -p my.private -l trial.lic --type Trial --expiration-days 30
+lmx -p my.private -l trial.lic --type Trial --expiration-days 30
 
 REM Create an enterprise license with custom quantity and version
-licensemanager -p my.private -l enterprise.lic --quantity 100 --product-version 2.1.0
+lmx -p my.private -l enterprise.lic --quantity 100 --product-version 2.1.0
 
 REM Create a license locked to a specific executable
-licensemanager -p my.private -l locked.lic --lock C:\MyApp\MyApp.exe
+lmx -p my.private -l locked.lic --lock C:\MyApp\MyApp.exe
 
 REM Create a license with custom product features
-licensemanager -p my.private -l featured.lic --product-features "Color=Blue Bird=Heron MaxUsers=50"
+lmx -p my.private -l featured.lic --product-features "Color=Blue Bird=Heron MaxUsers=50"
 
 REM Create a license with custom attributes
-licensemanager -p my.private -l attributed.lic --license-attributes "Department=Engineering Location=Seattle"
+lmx -p my.private -l attributed.lic --license-attributes "Department=Engineering Location=Seattle"
 
 REM Combine multiple options
-licensemanager -p my.private -l full.lic --type Trial --expiration-days 30 --lock C:\MyApp\MyApp.exe --product-features "Edition=Pro" --license-attributes "CustomerTier=Gold"
+lmx -p my.private -l full.lic --type Trial --expiration-days 30 --lock C:\MyApp\MyApp.exe --product-features "Edition=Pro" --license-attributes "CustomerTier=Gold"
 ```
 
 #### Key=Value Format
@@ -222,7 +230,7 @@ licensemanager -p my.private -l full.lic --type Trial --expiration-days 30 --loc
 For `--product-features` and `--license-attributes`, use space-separated key=value pairs:
 - Format: `"key1=value1 key2=value2 key3=value3"`
 - Keys cannot be empty
-- Values can be empty: `"Key="`
+- Values can be empty: `"Key="` or `Key`
 - Spaces in values are not supported (use quotes around individual pairs if needed)
 
 #### Security Notes
@@ -246,8 +254,8 @@ Install the `LicenseManager_12noon.Client` NuGet package in your application.
 The licensed application must pass the **Product ID** and the **Public Key** to the license validation API.
 
 ```
-const string PRODUCT_ID = "My Product ID";	// Copied from the License Manager application
-const string PUBLIC_KEY = "The Public Key";	// Copied from the License Manager application
+const string PRODUCT_ID = "My Product ID";	// Copied from the License Manager X application
+const string PUBLIC_KEY = "The Public Key";	// Copied from the License Manager X application
 LicenseFile license = new();
 bool isValid = license.IsLicenseValid(PRODUCT_ID, PUBLIC_KEY, out string messages);
 if (!isValid)

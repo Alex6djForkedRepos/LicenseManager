@@ -373,7 +373,7 @@ public partial class LicenseManager : ObservableObject
 		}
 		catch (Exception ex)
 		{
-			System.Windows.MessageBox.Show("Error converting keypair file: " + ex.Message, "12noon License Manager");
+			System.Windows.MessageBox.Show("Error converting keypair file: " + ex.Message, "12noon License Manager X");
 		}
 
 		///

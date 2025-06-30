@@ -8,7 +8,7 @@ using System.IO;
 namespace LicenseManager_12noon;
 
 /// <summary>
-/// CLI argument parser and validator for License Manager.
+/// CLI argument parser and validator.
 /// </summary>
 public class CliArgumentParser
 {
@@ -304,7 +304,7 @@ public class CliArgumentParser
 	public void ApplyOverrides(LicenseManager manager)
 	{
 		/// Product Properties
-		if ((!string.IsNullOrWhiteSpace(ProductVersion)) && (manager.Version != ProductVersion))
+		if (!string.IsNullOrWhiteSpace(ProductVersion) && (manager.Version != ProductVersion))
 		{
 			manager.Version = ProductVersion;
 		}
@@ -318,7 +318,7 @@ public class CliArgumentParser
 		if (ProductFeatures.Count > 0)
 		{
 			// Create a new dictionary with existing features plus new ones
-			var newFeatures = new Dictionary<string, string>(manager.ProductFeatures);
+			Dictionary<string, string> newFeatures = new(manager.ProductFeatures);
 			foreach (var feature in ProductFeatures)
 			{
 				newFeatures[feature.Key] = feature.Value;
@@ -352,7 +352,7 @@ public class CliArgumentParser
 		if (LicenseAttributes.Count > 0)
 		{
 			// Create a new dictionary with existing attributes plus new ones
-			var newAttributes = new Dictionary<string, string>(manager.LicenseAttributes);
+			Dictionary<string, string> newAttributes = new(manager.LicenseAttributes);
 			foreach (var attribute in LicenseAttributes)
 			{
 				newAttributes[attribute.Key] = attribute.Value;
@@ -376,12 +376,12 @@ public class CliArgumentParser
 	/// </summary>
 	public static void ShowHelp()
 	{
-		Console.WriteLine("License Manager CLI - Create license files from .private files");
+		Console.WriteLine("License Manager X CLI - Create license files from .private files");
 		Console.WriteLine();
 		Console.WriteLine("Usage:");
-		Console.WriteLine("  licensemanager --private <path> --license <path> [options]");
-		Console.WriteLine("  licensemanager --private <path> --save --license <path> [options]");
-		Console.WriteLine("  licensemanager --private <path> --save [options]");
+		Console.WriteLine("  lmx --private <path> --license <path> [options]");
+		Console.WriteLine("  lmx --private <path> --save --license <path> [options]");
+		Console.WriteLine("  lmx --private <path> --save [options]");
 		Console.WriteLine();
 		Console.WriteLine("Required Arguments:");
 		Console.WriteLine("  --private, -p <path> Path to the .private file");
@@ -403,14 +403,14 @@ public class CliArgumentParser
 		Console.WriteLine("  --help, -h                         Show this help");
 		Console.WriteLine();
 		Console.WriteLine("Examples:");
-		Console.WriteLine("  licensemanager -p my.private --save");
-		Console.WriteLine("  licensemanager -p my.private -l standard.lic -s --type Standard");
-		Console.WriteLine("  licensemanager -p my.private -l customer.lic");
-		Console.WriteLine("  licensemanager -p my.private -l trial.lic --type Trial --expiration-days 30");
-		Console.WriteLine("  licensemanager -p my.private -l enterprise.lic --quantity 100 --product-version 2.1.0");
-		Console.WriteLine("  licensemanager -p my.private -l locked.lic --lock \"C:\\MyApp\\MyApp.exe\"");
-		Console.WriteLine("  licensemanager -p my.private -l featured.lic --product-features \"Color=Blue Bird=Heron\"");
-		Console.WriteLine("  licensemanager -p my.private -l attributed.lic --license-attributes \"Size=Large Color=Red\"");
+		Console.WriteLine("  lmx -p my.private --save");
+		Console.WriteLine("  lmx -p my.private -l standard.lic -s --type Standard");
+		Console.WriteLine("  lmx -p my.private -l customer.lic");
+		Console.WriteLine("  lmx -p my.private -l trial.lic --type Trial --expiration-days 30");
+		Console.WriteLine("  lmx -p my.private -l enterprise.lic --quantity 100 --product-version 2.1.0");
+		Console.WriteLine("  lmx -p my.private -l locked.lic --lock \"C:\\MyApp\\MyApp.exe\"");
+		Console.WriteLine("  lmx -p my.private -l featured.lic --product-features \"Color=Blue Bird=Heron\"");
+		Console.WriteLine("  lmx -p my.private -l attributed.lic --license-attributes \"Size=Large Color=Red\"");
 		Console.WriteLine();
 		Console.WriteLine("Notes:");
 		Console.WriteLine("  - If the license file already exists, it will not be overwritten");

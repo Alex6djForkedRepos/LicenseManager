@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Diagnostics;
 using System.IO;
+using System.Runtime.InteropServices;
 using System.Windows;
 
 namespace LicenseManager_12noon;
@@ -9,6 +10,16 @@ namespace LicenseManager_12noon;
 /// </summary>
 public partial class App : Application
 {
+	[LibraryImport("kernel32.dll", EntryPoint = "AttachConsole", SetLastError = true)]
+	[return: MarshalAs(UnmanagedType.Bool)]
+	internal static partial bool AttachConsole(int dwProcessId);
+	private const int ATTACH_PARENT_PROCESS = -1;
+
+	[LibraryImport("kernel32.dll", EntryPoint = "FreeConsole", SetLastError = true)]
+	[return: MarshalAs(UnmanagedType.Bool)]
+	internal static partial bool FreeConsole();
+
+
 	/// <summary>
 	/// Application startup handler that determines whether to run in CLI or GUI mode.
 	/// </summary>
@@ -18,17 +29,23 @@ public partial class App : Application
 		// Check if command line arguments were passed
 		if (e.Args.Length > 0)
 		{
+			AttachConsole(ATTACH_PARENT_PROCESS);
+
 			// Run in CLI mode
 			int exitCode = RunCliMode(e.Args);
+
+			Console.Out.Flush();
+			FreeConsole();
+
 			Shutdown(exitCode);
 			return;
 		}
 
+		base.OnStartup(e);
+
 		// Run in GUI mode - create and show the main window
 		Window? window = Activator.CreateInstance(typeof(MainWindow), nonPublic: true) as Window;
 		window?.Show();
-
-		base.OnStartup(e);
 	}
 
 	/// <summary>

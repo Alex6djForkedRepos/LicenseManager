@@ -10,7 +10,7 @@
 	mc:Ignorable="d"
 	WindowStartupLocation="CenterScreen"
 	SizeToContent="Height" Width="1000" Height="700"
-	Title="License Manager by 12noon LLC"
+	Title="License Manager X by 12noon LLC"
 	Icon="/LicenseManager_12noon;component/lock.png"
 	AllowDrop="True" DragOver="Window_DragOver" Drop="WindowFile_Drop"
 >
