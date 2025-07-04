@@ -5,7 +5,7 @@ using System.Collections.Generic;
 using System.Globalization;
 using System.IO;
 
-namespace LicenseManager_12noon;
+namespace LicenseManagerX;
 
 /// <summary>
 /// CLI argument parser and validator.

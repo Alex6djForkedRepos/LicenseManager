@@ -2,7 +2,7 @@
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 using Standard.Licensing;
 
-namespace LicenseManager_12noon.UnitTests;
+namespace LicenseManagerX.UnitTests;
 
 [TestClass]
 public class CreateLicenseTest
@@ -32,8 +32,8 @@ public class CreateLicenseTest
 	[TestInitialize]
 	public void TestSetup()
 	{
-		PathLicenseFile = Path.Combine(PathTestFolder, _testContext.TestName + LicenseManager_12noon.LicenseManager.FileExtension_License);
-		PathKeypairFile = Path.Combine(PathTestFolder, _testContext.TestName + LicenseManager_12noon.LicenseManager.FileExtension_PrivateKey);
+		PathLicenseFile = Path.Combine(PathTestFolder, _testContext.TestName + LicenseManagerX.LicenseManager.FileExtension_License);
+		PathKeypairFile = Path.Combine(PathTestFolder, _testContext.TestName + LicenseManagerX.LicenseManager.FileExtension_PrivateKey);
 	}
 
 	[TestCleanup]
@@ -48,7 +48,7 @@ public class CreateLicenseTest
 	[TestMethod]
 	public void TestCreateKeypair()
 	{
-		LicenseManager_12noon.LicenseManager manager = new();
+		LicenseManagerX.LicenseManager manager = new();
 
 		// Create keypair -- error no passphrase
 		Assert.ThrowsException<ArgumentException>(() => manager.CreateKeypair());
@@ -61,7 +61,7 @@ public class CreateLicenseTest
 	[TestMethod]
 	public void TestCreateAndLoadKeypairDefaults()
 	{
-		LicenseManager_12noon.LicenseManager manager = new();
+		LicenseManagerX.LicenseManager manager = new();
 
 		const string PASSPHRASE = "Sadipscing vero tincidunt no minim enim aliquyam duo. Consetetur facer nonumy ut eleifend duo sit.";
 
@@ -87,7 +87,7 @@ public class CreateLicenseTest
 	[TestMethod]
 	public void TestCreateAndLoadKeypair()
 	{
-		LicenseManager_12noon.LicenseManager manager = new();
+		LicenseManagerX.LicenseManager manager = new();
 
 		const string PASSPHRASE = "Sadipscing vero tincidunt no minim enim aliquyam duo. Consetetur facer nonumy ut eleifend duo sit.";
 		const string PRODUCT_ID = "** My Product ID **";
@@ -122,9 +122,9 @@ public class CreateLicenseTest
 	/// </summary>
 	/// <param name="passphrase">Passphrase to use for the license manager</param>
 	/// <returns>New instance of the license manager</returns>
-	private LicenseManager_12noon.LicenseManager CreateLicenseManager(string passphrase)
+	private LicenseManagerX.LicenseManager CreateLicenseManager(string passphrase)
 	{
-		LicenseManager_12noon.LicenseManager manager = new();
+		LicenseManagerX.LicenseManager manager = new();
 
 		// Initialize a valid LicenseManager instance
 		// Assert that creating a license file does not throw an exception.
@@ -204,7 +204,7 @@ public class CreateLicenseTest
 	public void TestCreateLicenseBasic()
 	{
 		// Create keypair
-		LicenseManager_12noon.LicenseManager manager = CreateLicenseManager("This is another random passphrase.");
+		LicenseManagerX.LicenseManager manager = CreateLicenseManager("This is another random passphrase.");
 
 		// Create license
 		manager.SaveLicenseFile(PathLicenseFile);
@@ -215,7 +215,7 @@ public class CreateLicenseTest
 	public void TestCreateLicenseAndValidateDefaults()
 	{
 		// Create keypair
-		LicenseManager_12noon.LicenseManager manager = CreateLicenseManager("This is another random passphrase dolor lorem.");
+		LicenseManagerX.LicenseManager manager = CreateLicenseManager("This is another random passphrase dolor lorem.");
 
 		// Default value
 		Assert.AreEqual(LicenseType.Standard, manager.StandardOrTrial);
@@ -264,7 +264,7 @@ public class CreateLicenseTest
 	public void TestCreateLicenseAndValidate()
 	{
 		// Create keypair
-		LicenseManager_12noon.LicenseManager manager = CreateLicenseManager("This is another random passphrase dolor lorem ipsum.");
+		LicenseManagerX.LicenseManager manager = CreateLicenseManager("This is another random passphrase dolor lorem ipsum.");
 
 		// Default value
 		Assert.AreEqual(LicenseType.Standard, manager.StandardOrTrial);
@@ -326,7 +326,7 @@ public class CreateLicenseTest
 	public void TestMismatchedProductId()
 	{
 		// Create keypair
-		LicenseManager_12noon.LicenseManager manager = CreateLicenseManager("Ut exerci ad nonummy at amet elitr facilisis ipsum dolor iusto et takimata ut iriure. Elit eos ut accusam amet justo.");
+		LicenseManagerX.LicenseManager manager = CreateLicenseManager("Ut exerci ad nonummy at amet elitr facilisis ipsum dolor iusto et takimata ut iriure. Elit eos ut accusam amet justo.");
 
 		const string PRODUCT_ID = "Badger Product ID";
 
@@ -363,7 +363,7 @@ public class CreateLicenseTest
 		File.WriteAllText(pathAssemblyFileBad, @"Nonumy consectetuer et justo veniam. At stet est.");
 
 		// Create keypair
-		LicenseManager_12noon.LicenseManager manager = CreateLicenseManager("Sit dolor facilisi dolore amet autem. Amet stet sadipscing autem diam hendrerit.");
+		LicenseManagerX.LicenseManager manager = CreateLicenseManager("Sit dolor facilisi dolore amet autem. Amet stet sadipscing autem diam hendrerit.");
 
 		const string PRODUCT_ID = "Gazelle Product ID";
 
@@ -397,7 +397,7 @@ public class CreateLicenseTest
 		Thread.CurrentThread.CurrentUICulture = new System.Globalization.CultureInfo("es-ES");
 
 		// Create keypair
-		LicenseManager_12noon.LicenseManager manager = CreateLicenseManager("Et sed esse et diam facilisi rebum ipsum adipiscing diam.");
+		LicenseManagerX.LicenseManager manager = CreateLicenseManager("Et sed esse et diam facilisi rebum ipsum adipiscing diam.");
 
 		// Default value
 		Assert.AreEqual(LicenseType.Standard, manager.StandardOrTrial);
@@ -461,7 +461,7 @@ public class CreateLicenseTest
 	{
 		/// Arrange
 		// Create keypair
-		LicenseManager_12noon.LicenseManager manager = CreateLicenseManager("Ut exerci ad nonummy at amet elitr facilisis ipsum dolor iusto et takimata ut iriure. Elit eos ut accusam amet justo.");
+		LicenseManagerX.LicenseManager manager = CreateLicenseManager("Ut exerci ad nonummy at amet elitr facilisis ipsum dolor iusto et takimata ut iriure. Elit eos ut accusam amet justo.");
 
 		const string PRODUCT_ID = "Badger Product ID";
 
@@ -491,7 +491,7 @@ public class CreateLicenseTest
 	{
 		/// Arrange
 		// Create keypair
-		LicenseManager_12noon.LicenseManager manager = CreateLicenseManager("Dolor amet eirmod erat esse minim ut iriure sit aliquyam ipsum ad.");
+		LicenseManagerX.LicenseManager manager = CreateLicenseManager("Dolor amet eirmod erat esse minim ut iriure sit aliquyam ipsum ad.");
 
 		const string PRODUCT_ID = "Badger Product ID";
 
@@ -521,7 +521,7 @@ public class CreateLicenseTest
 	{
 		/// Arrange
 		// Create keypair
-		LicenseManager_12noon.LicenseManager manager = CreateLicenseManager("Hendrerit nihil et aliquyam amet tempor lorem sed.");
+		LicenseManagerX.LicenseManager manager = CreateLicenseManager("Hendrerit nihil et aliquyam amet tempor lorem sed.");
 
 		const string PRODUCT_ID = "Badger Product ID";
 
@@ -542,7 +542,7 @@ public class CreateLicenseTest
 	{
 		/// Arrange
 		// Create keypair
-		LicenseManager_12noon.LicenseManager manager = CreateLicenseManager("Rebum vel ipsum magna labore amet elitr dolor ea.");
+		LicenseManagerX.LicenseManager manager = CreateLicenseManager("Rebum vel ipsum magna labore amet elitr dolor ea.");
 
 		const string PRODUCT_ID = "Badger Product ID";
 
@@ -653,7 +653,7 @@ public class CreateLicenseTest
 	{
 		/// Arrange
 		// Create a keypair
-		LicenseManager_12noon.LicenseManager manager = new();
+		LicenseManagerX.LicenseManager manager = new();
 		const string PASSPHRASE = "Test passphrase";
 		manager.Passphrase = PASSPHRASE;
 		manager.CreateKeypair();

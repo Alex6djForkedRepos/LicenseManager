@@ -1,6 +1,6 @@
 ﻿using System.Windows;
 
-namespace LicenseManager_ClientExample;
+namespace LicenseManagerX_Example;
 
 /// <summary>
 /// Interaction logic for App.xaml

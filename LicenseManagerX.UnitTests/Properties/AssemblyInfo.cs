@@ -2,10 +2,10 @@ using System.Reflection;
 using System.Runtime.CompilerServices;
 using System.Runtime.InteropServices;
 
-//[assembly: AssemblyTitle("LicenseKeys.UnitTests")]
+//[assembly: AssemblyTitle("LicenseManagerX.UnitTests")]
 [assembly: AssemblyDescription("")]
 //[assembly: AssemblyConfiguration("")]
-//[assembly: AssemblyProduct("LicenseKeys.UnitTests")]
+//[assembly: AssemblyProduct("LicenseManagerX.UnitTests")]
 [assembly: AssemblyTrademark("")]
 [assembly: AssemblyCulture("")]
 

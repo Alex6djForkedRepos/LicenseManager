@@ -7,14 +7,12 @@
     <ImplicitUsings>enable</ImplicitUsings>
     <Nullable>enable</Nullable>
     <GeneratePackageOnBuild>False</GeneratePackageOnBuild>
-    <Title>12noon License Manager X Client</Title>
-    <Description>The 12noon License Manager X Client NuGet package provides an application with a simplified API for validating a license. It is an optional companion to the 12noon License Manager X application.
-
-License Manager X is a graphical front-end application designed to create and manage licenses for software applications. It leverages the Standard.Licensing project to handle license generation and validation.</Description>
+    <Title>12noon License Manager X Licensing For Applications</Title>
+    <Description>This NuGet package enables a .NET application to use a simplified API for validating a license. It is an optional companion to the 12noon License Manager X application which is forked from the Standard.Licensing project and fixes some of its issues.</Description>
     <PackageReadmeFile>README.md</PackageReadmeFile>
     <PackageIcon>lock.png</PackageIcon>
     <PackageProjectUrl>https://12noon.com</PackageProjectUrl>
-    <RepositoryUrl>https://github.com/skst/LicenseManager</RepositoryUrl>
+    <RepositoryUrl>https://github.com/12noonLLC/LicenseManagerX</RepositoryUrl>
     <PackageTags>license manager;license;licensing;lock;secure;security;sign;enterprise;version;publish;distribute;standard.licensing</PackageTags>
     <PackageLicenseExpression>MIT</PackageLicenseExpression>
     <PackageId>LicenseManager_12noon.Client</PackageId>
@@ -22,6 +20,7 @@ License Manager X is a graphical front-end application designed to create and ma
     <Platforms>x64</Platforms>
     <IncludeSymbols>True</IncludeSymbols>
     <SymbolPackageFormat>snupkg</SymbolPackageFormat>
+    <PackageReleaseNotes>Note: This NuGet package will probably be renamed in the near future. Please see the GitHub repository for more information.</PackageReleaseNotes>
   </PropertyGroup>
 
   <PropertyGroup Condition="'$(Configuration)|$(TargetFramework)|$(Platform)'=='Debug|net9.0|x64'">
@@ -33,7 +32,7 @@ License Manager X is a graphical front-end application designed to create and ma
   </PropertyGroup>
 
   <ItemGroup>
-    <None Include="..\LicenseManager_12noon\lock.png">
+    <None Include="..\LicenseManagerX\lock.png">
       <Pack>True</Pack>
       <PackagePath>\</PackagePath>
     </None>

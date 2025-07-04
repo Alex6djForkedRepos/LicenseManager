@@ -1,7 +1,7 @@
-﻿<Application x:Class="LicenseManager_ClientExample.App"
+﻿<Application x:Class="LicenseManagerX_Example.App"
              xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
              xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
-             xmlns:local="clr-namespace:LicenseManager_ClientExample"
+             xmlns:local="clr-namespace:LicenseManagerX_Example"
              StartupUri="MainWindow.xaml">
     <Application.Resources>
          

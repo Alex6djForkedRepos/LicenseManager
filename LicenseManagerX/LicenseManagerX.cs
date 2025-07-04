@@ -11,7 +11,7 @@ using System.Linq;
 using System.Text;
 using System.Xml.Linq;
 
-namespace LicenseManager_12noon;
+namespace LicenseManagerX;
 
 /// <summary>
 /// Create license file using a secret passphrase.

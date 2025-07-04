@@ -32,10 +32,10 @@ env:
   # Path to the project files relative to the root of the project.
   NUGET_PACKAGE_NAME:        LicenseManager_12noon.Client
   PROJECT_CLIENT_FILE_PATH:  LicenseManager_12noon.Client/LicenseManager_12noon.Client.csproj
-  PROJECT_APP_FILE_PATH:     LicenseManager_12noon/LicenseManager_12noon.csproj
-  PROJECT_TESTS_FILE_PATH:   LicenseManager_12noon.UnitTests/LicenseManager_12noon.UnitTests.csproj
-  PROJECT_EXAMPLE:           LicenseManager_ClientExample
-  PROJECT_EXAMPLE_FILE_PATH: LicenseManager_ClientExample/LicenseManager_ClientExample.csproj
+  PROJECT_APP_FILE_PATH:     LicenseManagerX/LicenseManagerX.csproj
+  PROJECT_TESTS_FILE_PATH:   LicenseManagerX.UnitTests/LicenseManagerX.UnitTests.csproj
+  PROJECT_EXAMPLE:           LicenseManagerX_Example
+  PROJECT_EXAMPLE_FILE_PATH: LicenseManagerX_Example/LicenseManagerX_Example.csproj
 
   # Configuration type to build.
   # You can convert this to a build matrix if you need coverage of multiple configuration types.

@@ -15,19 +15,17 @@ This project ensures that software licenses are securely generated and validated
 licenses for software applications using .NET.
 It leverages the [Standard.Licensing](https://github.com/junian/Standard.Licensing) project to handle license generation and validation.
 
-License Manager X is a graphical front-end for the [Standard.Licensing](https://github.com/junian/Standard.Licensing) project.
+In addition to this Windows application, License Manager X can also be used
+from a command line to support scripting, etc.
 
 The optional [LicenseManager_12noon.Client NuGet package](https://nuget.org/packages/LicenseManager_12noon.Client)
-has an improved API to validate licenses in your application.
+and has an improved API to validate licenses for your .NET application.
 
 > Note that the **LicenseManager_12noon.Client** NuGet package includes the
 [Standard.Licensing.12noon NuGet package](https://nuget.org/packages/Standard.Licensing.12noon)
-which has fixes for the `Expiration` property.
+and fixes the `Expiration` property.
 When those fixes are incorporated into the original **Standard.Licensing** project, the
 **Standard.Licensing.12noon** package will be deprecated.
-
-In addition to the Windows application, License Manager X can also be used
-from a command line for scripting, etc.
 
 You can download the License Manager X application from the Microsoft Store.
 
@@ -288,7 +286,7 @@ Then the application could use the hash as the _Product ID_.
 Of course, the licensee would have to keep that text as secret as they
 should keep the license file.
 
-### Example Client Application
+### Example Application
 
-The project includes an example client application that demonstrates how to use
-the client NuGet library to validate a license and access the license's information.
+The **LicenseManagerX_Example** project is an example application to demonstrate how to
+use the NuGet client library to validate a license and access the license's information.

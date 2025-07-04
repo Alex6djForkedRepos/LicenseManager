@@ -2,7 +2,7 @@ using LicenseManager_12noon.Client;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 using Standard.Licensing;
 
-namespace LicenseManager_12noon.UnitTests;
+namespace LicenseManagerX.UnitTests;
 
 [TestClass]
 public class ProductFeaturesTest
@@ -24,16 +24,16 @@ public class ProductFeaturesTest
 	[TestInitialize]
 	public void TestSetup()
 	{
-		PathLicenseFile = Path.Combine(PathTestFolder, _testContext.TestName + LicenseManager_12noon.LicenseManager.FileExtension_License);
-		PathKeypairFile = Path.Combine(PathTestFolder, _testContext.TestName + LicenseManager_12noon.LicenseManager.FileExtension_PrivateKey);
+		PathLicenseFile = Path.Combine(PathTestFolder, _testContext.TestName + LicenseManagerX.LicenseManager.FileExtension_License);
+		PathKeypairFile = Path.Combine(PathTestFolder, _testContext.TestName + LicenseManagerX.LicenseManager.FileExtension_PrivateKey);
 	}
 
 	/// <summary>
 	/// Creates a license manager with valid settings for testing.
 	/// </summary>
-	private LicenseManager_12noon.LicenseManager CreateLicenseManagerWithValidSettings()
+	private LicenseManagerX.LicenseManager CreateLicenseManagerWithValidSettings()
 	{
-		LicenseManager_12noon.LicenseManager manager = new();
+		LicenseManagerX.LicenseManager manager = new();
 
 		manager.Passphrase = "Test Product Features Passphrase";
 		manager.CreateKeypair();
@@ -59,12 +59,12 @@ public class ProductFeaturesTest
 		// Act & Assert
 		foreach (var name in reservedNames)
 		{
-			Assert.IsTrue(LicenseManager_12noon.LicenseManager.IsReservedFeatureName(name), $"'{name}' should be recognized as reserved");
+			Assert.IsTrue(LicenseManagerX.LicenseManager.IsReservedFeatureName(name), $"'{name}' should be recognized as reserved");
 		}
 
 		foreach (var name in validNames)
 		{
-			Assert.IsFalse(LicenseManager_12noon.LicenseManager.IsReservedFeatureName(name), $"'{name}' should not be recognized as reserved");
+			Assert.IsFalse(LicenseManagerX.LicenseManager.IsReservedFeatureName(name), $"'{name}' should not be recognized as reserved");
 		}
 	}
 
@@ -91,7 +91,7 @@ public class ProductFeaturesTest
 		manager.SaveKeypair(PathKeypairFile);
 
 		// Create a new manager and load the keypair
-		var newManager = new LicenseManager_12noon.LicenseManager();
+		var newManager = new LicenseManagerX.LicenseManager();
 		newManager.LoadKeypair(PathKeypairFile);
 
 		// Assert
@@ -126,7 +126,7 @@ public class ProductFeaturesTest
 		string productId = manager.ProductId;
 
 		// Create a new manager and validate the license
-		var newManager = new LicenseManager_12noon.LicenseManager();
+		var newManager = new LicenseManagerX.LicenseManager();
 		bool isValid = newManager.IsThisLicenseValid(productId, publicKey, PathLicenseFile, string.Empty, out string messages);
 
 		// Assert
@@ -203,7 +203,7 @@ public class ProductFeaturesTest
 		manager.SaveLicenseFile(PathLicenseFile);
 
 		// Create a new manager and validate the license
-		var newManager = new LicenseManager_12noon.LicenseManager();
+		var newManager = new LicenseManagerX.LicenseManager();
 		bool isValid = newManager.IsThisLicenseValid(
 			 manager.ProductId,
 			 manager.KeyPublic,
@@ -241,7 +241,7 @@ public class ProductFeaturesTest
 		manager.SaveLicenseFile(PathLicenseFile);
 
 		// Create a new manager and validate the license
-		var newManager = new LicenseManager_12noon.LicenseManager();
+		var newManager = new LicenseManagerX.LicenseManager();
 		bool isValid = newManager.IsThisLicenseValid(
 			 manager.ProductId,
 			 manager.KeyPublic,
@@ -293,7 +293,7 @@ public class ProductFeaturesTest
 	public void TestUpdateProductFeatures()
 	{
 		// Arrange
-		LicenseManager_12noon.LicenseManager manager = new();
+		LicenseManagerX.LicenseManager manager = new();
 		Dictionary<string, string> newFeatures = new()
 		{
 			["MaxUsers"] = "100",
@@ -313,7 +313,7 @@ public class ProductFeaturesTest
 	public void TestUpdateProductFeatures_NoChanges()
 	{
 		// Arrange
-		LicenseManager_12noon.LicenseManager manager = new();
+		LicenseManagerX.LicenseManager manager = new();
 		Dictionary<string, string> initialFeatures = new()
 		{
 			["MaxUsers"] = "100",
@@ -325,10 +325,10 @@ public class ProductFeaturesTest
 		manager.ProductFeatures["AllowBackups"] = "true";
 
 		// Clear dirty flag
-		typeof(LicenseManager_12noon.LicenseManager)
+		typeof(LicenseManagerX.LicenseManager)
 			 .GetMethod("ClearKeypairDirtyFlag", System.Reflection.BindingFlags.NonPublic | System.Reflection.BindingFlags.Instance)
 			 ?.Invoke(manager, null);
-		typeof(LicenseManager_12noon.LicenseManager)
+		typeof(LicenseManagerX.LicenseManager)
 			 .GetMethod("ClearLicenseDirtyFlag", System.Reflection.BindingFlags.NonPublic | System.Reflection.BindingFlags.Instance)
 			 ?.Invoke(manager, null);
 
@@ -351,7 +351,7 @@ public class ProductFeaturesTest
 	public void TestUpdateProductFeatures_WithChanges()
 	{
 		// Arrange
-		LicenseManager_12noon.LicenseManager manager = new();
+		LicenseManagerX.LicenseManager manager = new();
 		Dictionary<string, string> initialFeatures = new()
 		{
 			["MaxUsers"] = "100",
@@ -363,10 +363,10 @@ public class ProductFeaturesTest
 		manager.ProductFeatures["AllowBackups"] = "true";
 
 		// Clear dirty flag
-		typeof(LicenseManager_12noon.LicenseManager)
+		typeof(LicenseManagerX.LicenseManager)
 			 .GetMethod("ClearKeypairDirtyFlag", System.Reflection.BindingFlags.NonPublic | System.Reflection.BindingFlags.Instance)
 			 ?.Invoke(manager, null);
-		typeof(LicenseManager_12noon.LicenseManager)
+		typeof(LicenseManagerX.LicenseManager)
 			 .GetMethod("ClearLicenseDirtyFlag", System.Reflection.BindingFlags.NonPublic | System.Reflection.BindingFlags.Instance)
 			 ?.Invoke(manager, null);
 
@@ -396,7 +396,7 @@ public class ProductFeaturesTest
 	public void TestUpdateProductFeatures_ReservedName()
 	{
 		// Arrange
-		LicenseManager_12noon.LicenseManager manager = new();
+		LicenseManagerX.LicenseManager manager = new();
 		Dictionary<string, string> featuresWithReservedName = new()
 		{
 			["MaxUsers"] = "100",
@@ -415,7 +415,7 @@ public class ProductFeaturesTest
 	public void TestUpdateProductFeatures_EmptyValueAndKey()
 	{
 		// Arrange
-		LicenseManager_12noon.LicenseManager manager = new();
+		LicenseManagerX.LicenseManager manager = new();
 		Dictionary<string, string> features = new()
 		{
 			["EmptyValue"] = string.Empty,
@@ -435,7 +435,7 @@ public class ProductFeaturesTest
 	public void TestUpdateProductFeatures_RemoveFeature()
 	{
 		// Arrange
-		LicenseManager_12noon.LicenseManager manager = new();
+		LicenseManagerX.LicenseManager manager = new();
 
 		// Add initial features
 		manager.ProductFeatures["FeatureToKeep"] = "value1";

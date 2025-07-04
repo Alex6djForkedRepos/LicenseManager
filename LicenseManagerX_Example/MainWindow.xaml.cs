@@ -1,7 +1,7 @@
 ﻿using System.Windows;
 using System.Collections.Generic;
 
-namespace LicenseManager_ClientExample;
+namespace LicenseManagerX_Example;
 
 /// <summary>
 /// Interaction logic for MainWindow.xaml

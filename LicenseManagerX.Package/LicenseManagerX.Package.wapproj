@@ -26,7 +26,7 @@
     <NoWarn>$(NoWarn);NU1702</NoWarn>
     <AppxPackageDir>C:\VSIntermediate\LicenseManagerX\AppPackages\</AppxPackageDir>
     <GenerateTemporaryStoreCertificate>True</GenerateTemporaryStoreCertificate>
-    <EntryPointProjectUniqueName>..\LicenseManager_12noon\LicenseManager_12noon.csproj</EntryPointProjectUniqueName>
+    <EntryPointProjectUniqueName>..\LicenseManagerX\LicenseManagerX.csproj</EntryPointProjectUniqueName>
     <GenerateAppInstallerFile>False</GenerateAppInstallerFile>
     <AppxPackageSigningTimestampDigestAlgorithm>SHA256</AppxPackageSigningTimestampDigestAlgorithm>
     <AppxAutoIncrementPackageRevision>False</AppxAutoIncrementPackageRevision>
@@ -107,6 +107,6 @@
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\LicenseManagerX.Console\LicenseManagerX.Console.csproj" />
-    <ProjectReference Include="..\LicenseManager_12noon\LicenseManager_12noon.csproj" />
+    <ProjectReference Include="..\LicenseManagerX\LicenseManagerX.csproj" />
   </ItemGroup>
 </Project>

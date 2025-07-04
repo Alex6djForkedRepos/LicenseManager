@@ -4,7 +4,7 @@ using System.IO;
 
 var consoleDir = AppContext.BaseDirectory;
 var packageRoot = Path.GetFullPath(Path.Combine(consoleDir, ".."));
-string target = "LicenseManager_12noon";
+string target = "LicenseManagerX";
 string pathTarget = Path.Combine(packageRoot, target, target + ".exe");
 
 /*

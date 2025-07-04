@@ -3,7 +3,7 @@ using System;
 using System.IO;
 using Standard.Licensing;
 
-namespace LicenseManager_12noon.UnitTests;
+namespace LicenseManagerX.UnitTests;
 
 [TestClass]
 public class CliArgumentParserTest

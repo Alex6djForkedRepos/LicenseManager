@@ -6,7 +6,7 @@ using System.Diagnostics;
 using System.Linq;
 using System.Windows;
 
-namespace LicenseManager_12noon;
+namespace LicenseManagerX;
 
 /// <summary>
 /// Interaction logic for MainWindow.xaml

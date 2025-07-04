@@ -4,7 +4,8 @@ using System.IO;
 using System.Runtime.InteropServices;
 using System.Windows;
 
-namespace LicenseManager_12noon;
+namespace LicenseManagerX;
+
 /// <summary>
 /// Interaction logic for App.xaml
 /// </summary>

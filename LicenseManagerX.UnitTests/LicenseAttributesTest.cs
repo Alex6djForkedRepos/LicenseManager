@@ -2,7 +2,7 @@
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 using Standard.Licensing;
 
-namespace LicenseManager_12noon.UnitTests;
+namespace LicenseManagerX.UnitTests;
 
 [TestClass]
 public class LicenseAttributesTest

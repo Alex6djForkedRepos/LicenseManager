@@ -2,7 +2,7 @@ using Microsoft.VisualStudio.TestTools.UnitTesting;
 using Shared;
 using System;
 
-namespace LicenseManager_12noon.UnitTests;
+namespace LicenseManagerX.UnitTests;
 
 [TestClass]
 public class MultilineTextToDictionaryTests
