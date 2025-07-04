@@ -1,11 +1,19 @@
 # License Manager X by [12noon LLC](https://12noon.com)
 
-[![](https://img.shields.io/github/v/release/skst/LicenseManager.svg?label=latest%20release&color=007edf)](https://github.com/skst/LicenseManager/releases/latest)
-[![build](https://github.com/skst/LicenseManager/actions/workflows/dotnet.yml/badge.svg)](https://github.com/skst/LicenseManager/actions/workflows/dotnet.yml)
-[![GitHub last commit](https://img.shields.io/github/last-commit/skst/LicenseManager)](https://github.com/skst/LicenseManager)
+[![](https://img.shields.io/github/v/release/12noonLLC/LicenseManagerX.svg?label=latest%20release&color=007edf)](https://github.com/12noonLLC/LicenseManagerX/releases/latest)
+[![build](https://github.com/12noonLLC/LicenseManagerX/actions/workflows/build.yml/badge.svg)](https://github.com/12noonLLC/LicenseManagerX/actions/workflows/build.yml)
+[![GitHub last commit](https://img.shields.io/github/last-commit/12noonLLC/LicenseManagerX)](https://github.com/12noonLLC/LicenseManagerX)
 
 [![NuGet Version](https://img.shields.io/nuget/v/LicenseManager_12noon.Client.svg?style=for-the-badge)](https://nuget.org/packages/LicenseManager_12noon.Client)
 [![NuGet Downloads](https://img.shields.io/nuget/dt/LicenseManager_12noon.Client.svg?style=for-the-badge)](https://nuget.org/packages/LicenseManager_12noon.Client)
+
+## Description
+
+This project ensures that software licenses are securely generated and validated, providing a robust mechanism for software protection.
+
+**License Manager X** is a graphical front-end application designed to create and manage
+licenses for software applications using .NET.
+It leverages the [Standard.Licensing](https://github.com/junian/Standard.Licensing) project to handle license generation and validation.
 
 License Manager X is a graphical front-end for the [Standard.Licensing](https://github.com/junian/Standard.Licensing) project.
 
@@ -18,27 +26,16 @@ which has fixes for the `Expiration` property.
 When those fixes are incorporated into the original **Standard.Licensing** project, the
 **Standard.Licensing.12noon** package will be deprecated.
 
-License Manager X can also be used from a command line for scripting, etc.
+In addition to the Windows application, License Manager X can also be used
+from a command line for scripting, etc.
 
-
-![License Manager X](https://raw.githubusercontent.com/skst/LicenseManager/master/LicenseManager_12noon.png)
-
-## Description
-
-**License Manager X** is a graphical front-end application designed to create and manage
-licenses for software applications using .NET.
-It leverages the **Standard.Licensing** project to handle license generation and validation.
-
-This project ensures that software licenses are securely generated and validated, providing a robust mechanism for software protection.
-
-You can download the License Manager X application from the Microsoft Store, and it will be updated automatically.
+You can download the License Manager X application from the Microsoft Store.
 
 <a href="https://apps.microsoft.com/store/detail/9PFBGG44SHLM?launch=true&mode=full">
 	<img width="300" src="https://get.microsoft.com/images/en-us%20dark.svg"/>
 </a>
 
-Alternatively, you can download the latest release from the
-[Releases](https://github.com/skst/LicenseManager/releases/latest) page.
+![License Manager X](https://raw.githubusercontent.com/12noonLLC/LicenseManagerX/master/LicenseManagerX.png)
 
 ## Features
 
@@ -77,7 +74,7 @@ These features allow you to define additional metadata or functionality for your
 
 For example:
 
-|                 |
+| Key=Value       |
 |-----------------|
 | Feature1=Enabled |
 | Feature2=False |
@@ -111,7 +108,7 @@ These attributes allow you to define additional properties for the license.
 
 For example:
    
-|                 |
+| Key=Value       |
 |-----------------|
 | Region=US |
 | SupportLevel=Premium |
@@ -166,16 +163,18 @@ prompt you for where to save the `.lic` file.
 
 ### Command Line Interface
 
-The License Manager X application includes a built-in command line interface. The same executable can run in both GUI mode (when launched without arguments) and CLI mode (when arguments are provided).
+The License Manager X application includes a built-in command line interface. The same executable
+can run in both GUI mode (when launched without arguments) and CLI mode (when arguments are provided).
 
-Once you have created a `.private` file using the GUI, you can use the command line interface to generate new license files more efficiently.
+Once you have created a `.private` file using the GUI, you can use the
+command line interface to generate new license files more efficiently.
 
 #### Usage
 
 `lmx` is the Windows app execution alias for License Manager X. You can manage this in Windows Settings.
 
 ```cmd
-lmx --private <path> --license <path> [options]
+lmx --private <path> (--save | --license <path> | --save --license <path>) [options]
 ```
 
 #### Required Arguments
@@ -183,6 +182,8 @@ lmx --private <path> --license <path> [options]
 - `--private, -p <path>` - Path to the `.private` file
 
 #### One or More Arguments is Required
+
+You must specify at least one of these switches. They may be used together.
 
 - `--license, -l <path>` - Path to the new `.lic` file (must not exist)
 - `--save, -s` - Save the modified properties to the `.private` file
