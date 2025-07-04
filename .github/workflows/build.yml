@@ -355,7 +355,11 @@ jobs:
           tag_name: ${{ steps.get_version.outputs.tag }}
           name: ${{ steps.get_version.outputs.name }}
           generate_release_notes: true
-          files: ${{env.ARTIFACT_NAME}}.zip
+          #
+          # Note: To encourage installations from the Microsoft Store, do not upload build targets.
+          #
+          #files: ${{env.ARTIFACT_NAME}}.zip
+          #
           make_latest: ${{ startsWith(github.ref, 'refs/tags/v') && (steps.tag_on_master.outputs.on_master == 'true') }}
           draft: ${{ !(startsWith(github.ref, 'refs/tags/v') && (steps.tag_on_master.outputs.on_master == 'true')) }}
           #draft: ${{ (github.ref != 'refs/heads/master') || (startsWith(github.ref, 'refs/tags/') && !startsWith(github.ref, 'refs/tags/v')) }}
