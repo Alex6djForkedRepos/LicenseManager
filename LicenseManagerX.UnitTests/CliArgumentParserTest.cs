@@ -190,7 +190,7 @@ public class CliArgumentParserTest
 		};
 
 		// Act & Assert
-		Assert.ThrowsException<ArgumentException>(() => parser.Validate());
+		Assert.ThrowsException<FileNotFoundException>(parser.Validate);
 	}
 
 	[TestMethod]
@@ -206,7 +206,7 @@ public class CliArgumentParserTest
 		};
 
 		// Act & Assert
-		Assert.ThrowsException<ArgumentException>(() => parser.Validate());
+		Assert.ThrowsException<FileNotFoundException>(parser.Validate);
 	}
 
 	[TestMethod]
@@ -650,7 +650,7 @@ public class CliArgumentParserTest
 		};
 
 		// Act & Assert
-		Assert.ThrowsException<ArgumentException>(() => parser.Validate());
+		Assert.ThrowsException<ArgumentException>(parser.Validate);
 	}
 
 	[TestMethod]
@@ -666,5 +666,45 @@ public class CliArgumentParserTest
 		Assert.AreEqual("test.private", result.PrivateFilePath);
 		Assert.AreEqual("test.lic", result.LicenseFilePath);
 		Assert.IsTrue(result.SaveKeypair);
+	}
+
+	[TestMethod]
+	public void TestParseForceSwitch_AllowsOverwriteLicenseFile()
+	{
+		// Arrange
+		File.WriteAllText(PathLicenseFile, "Existing license file");
+		File.WriteAllText(PathKeypairFile, "Private file");
+		string[] args = ["--private", PathKeypairFile, "--license", PathLicenseFile, "--force"];
+
+		// Act
+		CliArgumentParser parser = CliArgumentParser.Parse(args);
+
+		// Assert
+		Assert.AreEqual(PathKeypairFile, parser.PrivateFilePath);
+		Assert.AreEqual(PathLicenseFile, parser.LicenseFilePath);
+		Assert.IsTrue(parser.ForceOverwrite);
+
+		// Should not throw, even though license file exists
+		parser.Validate();
+	}
+
+	[TestMethod]
+	public void TestParseForceShortSwitch_AllowsOverwriteLicenseFile()
+	{
+		// Arrange
+		File.WriteAllText(PathLicenseFile, "Existing license file");
+		File.WriteAllText(PathKeypairFile, "Private file");
+		string[] args = ["-p", PathKeypairFile, "-l", PathLicenseFile, "-f"];
+
+		// Act
+		CliArgumentParser parser = CliArgumentParser.Parse(args);
+
+		// Assert
+		Assert.AreEqual(PathKeypairFile, parser.PrivateFilePath);
+		Assert.AreEqual(PathLicenseFile, parser.LicenseFilePath);
+		Assert.IsTrue(parser.ForceOverwrite);
+
+		// Should not throw, even though license file exists
+		parser.Validate();
 	}
 }

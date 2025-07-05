@@ -16,8 +16,11 @@ public class CliArgumentParser
 	public string PrivateFilePath { get; set; } = string.Empty;
 
 	// At least one is required
-	public string LicenseFilePath { get; set; } = string.Empty;
 	public bool SaveKeypair { get; set; } = false;
+	public string LicenseFilePath { get; set; } = string.Empty;
+
+	// Optional: Overwrite existing license file if true
+	public bool ForceOverwrite { get; set; } = false;
 
 	// Optional overrides
 	public string? ProductVersion { get; set; }
@@ -55,6 +58,11 @@ public class CliArgumentParser
 					parser.PrivateFilePath = args[++i];
 					break;
 
+				case "--save":
+				case "-s":
+					parser.SaveKeypair = true;
+					break;
+
 				case "--license":
 				case "-l":
 					if (i + 1 >= args.Length)
@@ -64,9 +72,9 @@ public class CliArgumentParser
 					parser.LicenseFilePath = args[++i];
 					break;
 
-				case "--save":
-				case "-s":
-					parser.SaveKeypair = true;
+				case "--force":
+				case "-f":
+					parser.ForceOverwrite = true;
 					break;
 
 				case "--product-version":
@@ -239,7 +247,7 @@ public class CliArgumentParser
 
 		if (!File.Exists(PrivateFilePath))
 		{
-			throw new ArgumentException($"Private file does not exist: {PrivateFilePath}");
+			throw new FileNotFoundException($"Private file does not exist: {PrivateFilePath}");
 		}
 
 		// If neither --license nor --save is specified, error
@@ -248,10 +256,10 @@ public class CliArgumentParser
 			throw new ArgumentException("Either --license or --save must be specified.");
 		}
 
-		// If license file specified, ensure it does not exist
+		// If license file specified, ensure it does not exist unless --force is set
 		if (!string.IsNullOrWhiteSpace(LicenseFilePath))
 		{
-			if (File.Exists(LicenseFilePath))
+			if (File.Exists(LicenseFilePath) && !ForceOverwrite)
 			{
 				throw new ArgumentException($"License file already exists and will not be overwritten: {LicenseFilePath}");
 			}
@@ -260,7 +268,7 @@ public class CliArgumentParser
 			string? licenseDir = Path.GetDirectoryName(LicenseFilePath);
 			if (!string.IsNullOrEmpty(licenseDir) && !Directory.Exists(licenseDir))
 			{
-				throw new ArgumentException($"Directory does not exist for license file: {licenseDir}");
+				throw new DirectoryNotFoundException($"Directory does not exist for license file: {licenseDir}");
 			}
 		}
 
@@ -293,7 +301,7 @@ public class CliArgumentParser
 		// Validate lock file exists if specified
 		if (!string.IsNullOrWhiteSpace(LockPath) && !File.Exists(LockPath))
 		{
-			throw new ArgumentException($"Lock file does not exist: {LockPath}");
+			throw new FileNotFoundException($"Lock file does not exist: {LockPath}");
 		}
 	}
 
@@ -387,19 +395,20 @@ public class CliArgumentParser
 		Console.WriteLine("  --private, -p <path> Path to the .private file");
 		Console.WriteLine();
 		Console.WriteLine("At least one must be specified:");
-		Console.WriteLine("  --license, -l <path> Path to the new .lic file (must not exist)");
 		Console.WriteLine("  --save, -s           Save the keypair file");
+		Console.WriteLine("  --license, -l <path> Path to the new .lic file (will not overwrite unless --force)");
 		Console.WriteLine();
 		Console.WriteLine("Optional Arguments:");
+		Console.WriteLine("  --force, -f                        Overwrite the license file if it already exists");
 		Console.WriteLine("  --product-version, -v <version>    Product version");
-		Console.WriteLine("  --product-publish-date, -pd <date> Product publish date (YYYY-MM-DD)");
+		Console.WriteLine("  --product-publish-date, -pd <date> Product publish date (YYYY-MM-DD format)");
 		Console.WriteLine("  --product-features, -pf <pairs>    Product features as key=value pairs");
-		Console.WriteLine("  --type, -t <type>                  License type: Standard or Trial");
+		Console.WriteLine("  --type, -t <Standard | Trial>      License type");
 		Console.WriteLine("  --quantity, -q <number>            License quantity (positive integer)");
 		Console.WriteLine("  --expiration-days, -dy <days>      Expiration in days (0 = no expiry)");
 		Console.WriteLine("  --expiration-date, -dt <date>      Expiration date (YYYY-MM-DD format)");
 		Console.WriteLine("  --license-attributes, -la <pairs>  License attributes as key=value pairs");
-		Console.WriteLine("  --lock <path>                      Lock license to a specific DLL or EXE file");
+		Console.WriteLine("  --lock <path>                      Lock license to a specific file (e.g., EXE or DLL)");
 		Console.WriteLine("  --help, -h                         Show this help");
 		Console.WriteLine();
 		Console.WriteLine("Examples:");
@@ -413,7 +422,7 @@ public class CliArgumentParser
 		Console.WriteLine("  lmx -p my.private -l attributed.lic --license-attributes \"Size=Large Color=Red\"");
 		Console.WriteLine();
 		Console.WriteLine("Notes:");
-		Console.WriteLine("  - If the license file already exists, it will not be overwritten");
+		Console.WriteLine("  - If the license file already exists, it will not be overwritten unless --force is specified");
 		Console.WriteLine("  - Cannot override: passphrase, keys, product name, customer info");
 		Console.WriteLine("  - Either expiration-days or expiration-date can be specified, not both");
 		Console.WriteLine("  - Key=value pairs should be space-separated: \"key1=value1 key2=value2\"");

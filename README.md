@@ -141,7 +141,8 @@ and create new licenses for anyone who will use the new build.
 
 1. Create a keypair by entering a value for _Passphrase_ and pressing _Create Keypair_ button.
 1. Enter a _Product ID_.
-1. Optionally, lock the license to a specific build of the licensed application.
+1. Optionally, lock the license to a specific build of the licensed application. Technically, this
+could be _any_ file, but one that is unique to a specific build (e.g., an EXE or DLL) is most useful.
 1. Fill in the product information, license information, and licensee information.
 1. Press the _Save Keypair..._ button. This will prompt you for where to save the `.private` file.
 1. Press the _Save License..._ button. This will prompt you for where to save the `.lic` file.
@@ -190,20 +191,21 @@ lmx --private <path> (--save | --license <path> | --save --license <path>) [opti
 
 You must specify at least one of these switches. They may be used together.
 
-- `--license, -l <path>` - Path to the new `.lic` file (must not exist)
+- `--license, -l <path>` - Path to the new `.lic` file (will not overwrite unless --force)
 - `--save, -s` - Save the modified properties to the `.private` file
 
 #### Optional Arguments
 
+- `--force, -f`                     - Overwrite the license file if it already exists
 - `--product-version, -v <version>` - Product version
 - `--product-publish-date, -pd <date>` - Product publish date (YYYY-MM-DD)
 - `--product-features, -pf <pairs>` - Product features as key=value pairs
-- `--type, -t <type>` - License type: Standard or Trial
+- `--type, -t <Standard | Trial>` - License type
 - `--quantity, -q <number>` - License quantity (positive integer)
 - `--expiration-days, -dy <days>` - Expiration in days (0 = no expiry)
 - `--expiration-date, -dt <date>` - Expiration date (YYYY-MM-DD format)
 - `--license-attributes, -la <pairs>` - License attributes as key=value pairs
-- `--lock <path>` - Lock license to a specific DLL or EXE file
+- `--lock <path>` - Lock license to a specific file (e.g., EXE or DLL)
 - `--help, -h` - Show help
 
 #### Examples
