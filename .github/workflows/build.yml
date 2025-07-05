@@ -52,15 +52,39 @@ concurrency:
 # Jobs are run in parallel unless `needs` is specified.
 # https://docs.github.com/en/actions/learn-github-actions/managing-complex-workflows#creating-dependent-jobs
 jobs:
+  precheck:
+    name: 🧠 Check for redundant runs
+    runs-on: ubuntu-latest
+    outputs:
+      should_skip: ${{ steps.skip.outputs.should_skip == 'true' }}
+    steps:
+      - id: skip
+        uses: fkirc/skip-duplicate-actions@v5.3.1
+        with:
+          paths_ignore: '[ "**/*.gitignore", "**/*.gitattributes", "**/*.md", "LICENSE" ]'
+          skip_after_successful_duplicate: true
+
   build:
+    name: 🏗 Build License Manager X and its components
+    needs: precheck
+    if: ${{ !needs.precheck.outputs.should_skip }}
     runs-on: windows-latest
 
     permissions:
       contents: write
 
     steps:
+      - name: 🚫 Prevent rerun if skipped
+        shell: bash
+        run: |
+          if [ "$GITHUB_RUN_ATTEMPT" -gt 1 ]; then
+            echo "This is a rerun. Skipping build."
+            exit 1
+          fi
+
       - name: 🗒️ Output state
         run: |
+          echo "🚀 Building..."
           echo "GITHUB_SHA: ${{ github.sha }}"
           echo "GITHUB_REF: ${{ github.ref }}"
           echo "GITHUB_REF_NAME: ${{ github.ref_name }}"
@@ -112,7 +136,7 @@ jobs:
           dotnet nuget locals all --clear
 
       # Build NuGet package for both .NET 8 and .NET 9
-      - name: 🏗️ Build NuGet package and main application
+      - name: 🏗 Build NuGet package and main application
         run: |
           dotnet build ${{env.PROJECT_CLIENT_FILE_PATH}}  --nologo --self-contained --configuration ${{env.BUILD_CONFIGURATION}} --runtime win-x64 --framework net8.0
           dotnet build ${{env.PROJECT_CLIENT_FILE_PATH}}  --nologo --self-contained --configuration ${{env.BUILD_CONFIGURATION}} --runtime win-x64 --framework net9.0
@@ -121,7 +145,9 @@ jobs:
       # https://learn.microsoft.com/en-us/dotnet/core/tools/dotnet-test
       # verbosity detailed
       - name: 💯 Run unit tests
-        run: dotnet test ${{env.PROJECT_TESTS_FILE_PATH}} --nologo --verbosity normal --logger:"console;verbosity=normal" --configuration Debug --runtime win-x64
+        run: |
+          dotnet test ${{env.PROJECT_TESTS_FILE_PATH}} --nologo --verbosity normal --logger:"console;verbosity=normal" --configuration Release --runtime win-x64
+          dotnet test ${{env.PROJECT_TESTS_FILE_PATH}} --nologo --verbosity normal --logger:"console;verbosity=normal" --configuration Debug   --runtime win-x64
 
       #
       # NUGET PACKAGE
@@ -131,6 +157,7 @@ jobs:
       # If not, we only want to build the client.
       #
       - name: 🧰 Pack NuGet package to `release` folder
+        if: startsWith(github.ref, 'refs/tags/v')
         run: |
           # pack => .\artifacts\package\release\LicenseManager_12noon.Client.1.2.3.4.nupkg
           # No need to use --include-symbols because it is specified in the project file.
@@ -252,6 +279,7 @@ jobs:
   # | Release (master) | Yes   | Yes              | Production   | Yes           | Tag on master       |
   #
   release:
+    name: 🚀 Create release for GitHub Releases
     needs: build
     if: startsWith(github.ref, 'refs/tags/v')
     runs-on: ubuntu-latest
@@ -349,7 +377,7 @@ jobs:
 
       # https://github.com/marketplace/actions/gh-release
       - name: 🚀 Create GitHub Release
-        if: steps.check_release.outputs.result == 'false'
+        if: steps.check_release.outputs.result != 'true'
         uses: softprops/action-gh-release@v2
         with:
           tag_name: ${{ steps.get_version.outputs.tag }}
@@ -369,7 +397,7 @@ jobs:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
 
       - name: 🗒️ Output release info
-        if: steps.check_release.outputs.result == 'false'
+        if: steps.check_release.outputs.result != 'true'
         run: |
           echo "Release created for tag: ${{ steps.get_version.outputs.tag }}"
           echo "Release name: ${{ steps.get_version.outputs.name }}"
@@ -392,6 +420,7 @@ jobs:
           #dotnet nuget push ./release/*.snupkg --api-key ${{secrets.TOKEN_PACKAGES}} --source https://nuget.pkg.github.com/${{github.repository_owner}}/index.json --skip-duplicate
 
   cleanup:
+    name: 🧹 Clean up artifacts
     needs: [build, release]
     runs-on: ubuntu-latest
     if: always()
