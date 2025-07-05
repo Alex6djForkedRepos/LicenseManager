@@ -65,9 +65,12 @@ else
 	ProcessStartInfo psi = new()
 	{
 		FileName = pathTarget,
-		Arguments = string.Join(" ", args),
 		UseShellExecute = false,
 	};
+	foreach (string arg in args)
+	{
+		psi.ArgumentList.Add(arg);
+	}
 
 	Process process = Process.Start(psi);
 	process.WaitForExit();
