@@ -9,23 +9,30 @@
 
 ## Description
 
-This project ensures that software licenses are securely generated and validated, providing a robust mechanism for software protection.
+This project ensures that software licenses are securely generated and validated,
+providing a robust mechanism for software protection.
 
 **License Manager X** is a graphical front-end application designed to create and manage
 licenses for software applications using .NET.
-It leverages the [Standard.Licensing](https://github.com/junian/Standard.Licensing) project to handle license generation and validation.
+It leverages the [Standard.Licensing](https://github.com/junian/Standard.Licensing)
+project to handle license generation and validation.
 
 In addition to this Windows application, License Manager X can also be used
 from a command line to support scripting, etc.
 
 The optional [LicenseManager_12noon.Client NuGet package](https://nuget.org/packages/LicenseManager_12noon.Client)
-and has an improved API to validate licenses for your .NET application.
+has an improved API to validate licenses for your .NET application.
 
-> Note that the **LicenseManager_12noon.Client** NuGet package includes the
+Your application will need to import the [LicenseManager_12noon.Client](https://nuget.org/packages/LicenseManager_12noon.Client)
+NuGet package, which has an improved API to validate licenses for your .NET application.
+Alternatively, your application can use the original **Standard.Licensing** NuGet package on which it is based.
+You can switch at any time--you are not locked in to one or the other.
+
+> Note that the **LicenseManager_12noon.Client** NuGet package includes the fixes in the
 [Standard.Licensing.12noon NuGet package](https://nuget.org/packages/Standard.Licensing.12noon)
-and fixes the `Expiration` property.
-When those fixes are incorporated into the original **Standard.Licensing** project, the
-**Standard.Licensing.12noon** package will be deprecated.
+for the `Expiration` property.
+When the pull request with those fixes is accepted into the original **Standard.Licensing** project,
+the **Standard.Licensing.12noon** package will be deprecated.
 
 You can download the License Manager X application from the Microsoft Store.
 
