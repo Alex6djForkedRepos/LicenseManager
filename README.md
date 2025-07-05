@@ -180,7 +180,7 @@ command line interface to generate new license files more efficiently.
 `lmx` is the Windows app execution alias for License Manager X. You can manage this in Windows Settings.
 
 ```cmd
-lmx --private <path> (--save | --license <path> | --save --license <path>) [options]
+lmx --private <path> [--save | --license <path> | --save --license <path>] [options]
 ```
 
 #### Required Arguments
@@ -190,13 +190,14 @@ lmx --private <path> (--save | --license <path> | --save --license <path>) [opti
 #### One or More Arguments is Required
 
 You must specify at least one of these switches. They may be used together.
+If you do not specify one of these, it only displays the properties from the keypair file.
 
 - `--license, -l <path>` - Path to the new `.lic` file (will not overwrite unless --force)
 - `--save, -s` - Save the modified properties to the `.private` file
 
 #### Optional Arguments
 
-- `--force, -f`                     - Overwrite the license file if it already exists
+- `--force, -f` - Overwrite the license file if it already exists
 - `--product-version, -v <version>` - Product version
 - `--product-publish-date, -pd <date>` - Product publish date (YYYY-MM-DD)
 - `--product-features, -pf <pairs>` - Product features as key=value pairs
@@ -205,12 +206,15 @@ You must specify at least one of these switches. They may be used together.
 - `--expiration-days, -dy <days>` - Expiration in days (0 = no expiry)
 - `--expiration-date, -dt <date>` - Expiration date (YYYY-MM-DD format)
 - `--license-attributes, -la <pairs>` - License attributes as key=value pairs
-- `--lock <path>` - Lock license to a specific file (e.g., EXE or DLL)
+- `--lock <path>` - Lock license to a specific file (_e.g.,_ EXE or DLL)
 - `--help, -h` - Show help
 
 #### Examples
 
 ```cmd
+REM Display properties from .private file
+lmx -p my.private
+
 REM Create a standard license using default settings from .private file
 lmx -p my.private -l customer.lic
 

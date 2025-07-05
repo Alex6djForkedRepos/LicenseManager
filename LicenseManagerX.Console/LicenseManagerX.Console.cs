@@ -2,15 +2,15 @@
 using System.Diagnostics;
 using System.IO;
 
-var consoleDir = AppContext.BaseDirectory;
-var packageRoot = Path.GetFullPath(Path.Combine(consoleDir, ".."));
-string target = "LicenseManagerX";
-string pathTarget = Path.Combine(packageRoot, target, target + ".exe");
-
 /*
  * Build this with:
  * 	> dotnet publish LicenseManagerX.Console.cs -c Release -r win-x64 -p:OutputType=Exe -p:PublishSingleFile=true --self-contained true
  */
+
+var consoleDir = AppContext.BaseDirectory;
+var packageRoot = Path.GetFullPath(Path.Combine(consoleDir, ".."));
+string target = "LicenseManagerX";
+string pathTarget = Path.Combine(packageRoot, target, target + ".exe");
 
 if (!File.Exists(pathTarget))
 {

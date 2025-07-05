@@ -1,5 +1,4 @@
 ﻿using System;
-using System.Diagnostics;
 using System.IO;
 using System.Runtime.InteropServices;
 using System.Windows;
@@ -62,10 +61,16 @@ public partial class App : Application
 			var parsedArgs = CliArgumentParser.Parse(args);
 
 			// Show help if requested or no arguments provided
-			if (parsedArgs.HelpRequested || args.Length == 0)
+			if (parsedArgs.HelpRequested || (args.Length == 0))
 			{
 				CliArgumentParser.ShowHelp();
 				return 0;
+			}
+
+			// Validate arguments, but do not require --license or --save for display mode
+			if (!parsedArgs.SaveKeypair && string.IsNullOrWhiteSpace(parsedArgs.LicenseFilePath))
+			{
+				return DisplayKeypairProperties(parsedArgs);
 			}
 
 			// Validate arguments
@@ -73,42 +78,8 @@ public partial class App : Application
 
 			// Create license manager and load private file
 			LicenseManager manager = new();
-
-			Console.WriteLine($"Loading private file: {parsedArgs.PrivateFilePath}");
 			manager.LoadKeypair(parsedArgs.PrivateFilePath);
-
-			Console.WriteLine($"Loaded license information for: {manager.Product}");
-			Console.WriteLine($"Product Version: {manager.Version}");
-			// Display product features if any
-			if (manager.ProductFeatures.Count > 0)
-			{
-				Console.WriteLine($"Product Features:");
-				foreach (var feature in manager.ProductFeatures)
-				{
-					Console.WriteLine($"  {feature.Key} = {feature.Value}");
-				}
-			}
-
-			Console.WriteLine($"Customer: {manager.Name} ({manager.Email})");
-			Console.WriteLine($"License Type: {manager.StandardOrTrial}");
-			Console.WriteLine($"Quantity: {manager.Quantity}");
-			Console.WriteLine($"Expiration Days: {manager.ExpirationDays}");
-
-			// Display license attributes if any
-			if (manager.LicenseAttributes.Count > 0)
-			{
-				Console.WriteLine($"License Attributes:");
-				foreach (var attribute in manager.LicenseAttributes)
-				{
-					Console.WriteLine($"  {attribute.Key} = {attribute.Value}");
-				}
-			}
-
-			// Display lock file information if present
-			if (manager.IsLockedToAssembly && !string.IsNullOrEmpty(manager.PathAssembly))
-			{
-				Console.WriteLine($"Lock File: {manager.PathAssembly}");
-			}
+			Console.WriteLine($"Loaded private information for: {manager.Product} {manager.Version}");
 
 			// Apply CLI overrides
 			parsedArgs.ApplyOverrides(manager);
@@ -123,55 +94,10 @@ public partial class App : Application
 
 			if (hasOverrides)
 			{
-				Console.WriteLine();
-				Console.WriteLine("Applied CLI overrides:");
-				if (!string.IsNullOrEmpty(parsedArgs.ProductVersion))
-				{
-					Console.WriteLine($"  Product Version: {manager.Version}");
-				}
-				if (parsedArgs.ProductPublishDate.HasValue)
-				{
-					Console.WriteLine($"  Product Publish Date: {manager.PublishDate}");
-				}
-				if (parsedArgs.ProductFeatures.Count > 0)
-				{
-					Console.WriteLine($"  Product Features:");
-					foreach (var feature in parsedArgs.ProductFeatures)
-					{
-						Console.WriteLine($"    {feature.Key} = {feature.Value}");
-					}
-				}
-				if (parsedArgs.LicenseType.HasValue)
-				{
-					Console.WriteLine($"  License Type: {manager.StandardOrTrial}");
-				}
-				if (parsedArgs.Quantity.HasValue)
-				{
-					Console.WriteLine($"  Quantity: {manager.Quantity}");
-				}
-				if (parsedArgs.ExpirationDays.HasValue)
-				{
-					Console.WriteLine($"  Expiration Days: {manager.ExpirationDays}");
-				}
-				if (parsedArgs.ExpirationDate.HasValue)
-				{
-					Console.WriteLine($"  Expiration Date: {manager.ExpirationDateUTC:yyyy-MM-dd}");
-				}
-				if (parsedArgs.LicenseAttributes.Count > 0)
-				{
-					Console.WriteLine($"  License Attributes:");
-					foreach (var attribute in parsedArgs.LicenseAttributes)
-					{
-						Console.WriteLine($"    {attribute.Key} = {attribute.Value}");
-					}
-				}
-				if (!string.IsNullOrEmpty(parsedArgs.LockPath))
-				{
-					Console.WriteLine($"  Lock File: {manager.PathAssembly}");
-				}
+				DisplayOverrideProperties(parsedArgs, manager);
 			}
 
-			 // Save keypair if requested
+			// Save keypair if requested
 			if (parsedArgs.SaveKeypair)
 			{
 				Console.WriteLine();
@@ -187,14 +113,6 @@ public partial class App : Application
 				Console.WriteLine($"Creating license file: {parsedArgs.LicenseFilePath}");
 				manager.SaveLicenseFile(parsedArgs.LicenseFilePath);
 				Console.WriteLine("License file created successfully.");
-			}
-
-			Debug.Assert(parsedArgs.SaveKeypair || !string.IsNullOrWhiteSpace(parsedArgs.LicenseFilePath));
-			// If neither --license nor --save was specified, error (should be caught by validation)
-			if (!parsedArgs.SaveKeypair && string.IsNullOrWhiteSpace(parsedArgs.LicenseFilePath))
-			{
-				Console.Error.WriteLine("Error: Either --license or --save must be specified.");
-				return 1;
 			}
 
 			return 0;
@@ -228,5 +146,119 @@ public partial class App : Application
 			return 1;
 		}
 	}
-}
 
+	private static int DisplayKeypairProperties(CliArgumentParser parsedArgs)
+	{
+		// Only require --private to exist
+		if (string.IsNullOrWhiteSpace(parsedArgs.PrivateFilePath))
+		{
+			Console.Error.WriteLine("Error: Private file path is required. Use --private or -p argument.");
+			return 1;
+		}
+		if (!File.Exists(parsedArgs.PrivateFilePath))
+		{
+			Console.Error.WriteLine($"Error: Private file does not exist: {parsedArgs.PrivateFilePath}");
+			return 1;
+		}
+
+		// Load and display keypair info only
+		LicenseManager displayManager = new();
+		displayManager.LoadKeypair(parsedArgs.PrivateFilePath);
+
+		Console.WriteLine();
+
+		Console.WriteLine($"Product ID: {displayManager.ProductId}");
+		Console.WriteLine($"Public key: {displayManager.KeyPublic}");
+		Console.WriteLine();
+
+		Console.WriteLine($"Product: {displayManager.Product}");
+		Console.WriteLine($"Version: {displayManager.Version}");
+		if (displayManager.ProductFeatures.Count > 0)
+		{
+			Console.WriteLine($"Product features:");
+			foreach (var feature in displayManager.ProductFeatures)
+			{
+				Console.WriteLine($"  {feature.Key} = {feature.Value}");
+			}
+		}
+		Console.WriteLine();
+
+		Console.WriteLine($"Customer: {displayManager.Name} <{displayManager.Email}>");
+		if (!string.IsNullOrEmpty(displayManager.Company))
+		{
+			Console.WriteLine($"Company: {displayManager.Company}");
+		}
+		Console.WriteLine();
+
+		Console.WriteLine($"License type: {displayManager.StandardOrTrial}");
+		Console.WriteLine($"Quantity: {displayManager.Quantity}");
+		if (displayManager.ExpirationDays > 0)
+		{
+			Console.WriteLine($"Expiration days: {displayManager.ExpirationDays} ({((displayManager.ExpirationDateUTC == DateTime.MaxValue.Date) ? "None" : displayManager.ExpirationDateUTC):D})");
+		}
+		if (displayManager.LicenseAttributes.Count > 0)
+		{
+			Console.WriteLine($"License attributes:");
+			foreach (var attribute in displayManager.LicenseAttributes)
+			{
+				Console.WriteLine($"  {attribute.Key} = {attribute.Value}");
+			}
+		}
+		if (displayManager.IsLockedToAssembly && !string.IsNullOrEmpty(displayManager.PathAssembly))
+		{
+			Console.WriteLine($"Lock file: {displayManager.PathAssembly} ({(File.Exists(displayManager.PathAssembly) ? "Exists" : "Does NOT exist")})");
+		}
+
+		return 0;
+	}
+
+	private static void DisplayOverrideProperties(CliArgumentParser parsedArgs, LicenseManager manager)
+	{
+		Console.WriteLine();
+		Console.WriteLine("Applied CLI overrides:");
+		if (!string.IsNullOrEmpty(parsedArgs.ProductVersion))
+		{
+			Console.WriteLine($"  Product Version: {manager.Version}");
+		}
+		if (parsedArgs.ProductPublishDate.HasValue)
+		{
+			Console.WriteLine($"  Product Publish Date: {manager.PublishDate}");
+		}
+		if (parsedArgs.ProductFeatures.Count > 0)
+		{
+			Console.WriteLine($"  Product Features:");
+			foreach (var feature in parsedArgs.ProductFeatures)
+			{
+				Console.WriteLine($"    {feature.Key} = {feature.Value}");
+			}
+		}
+		if (parsedArgs.LicenseType.HasValue)
+		{
+			Console.WriteLine($"  License Type: {manager.StandardOrTrial}");
+		}
+		if (parsedArgs.Quantity.HasValue)
+		{
+			Console.WriteLine($"  Quantity: {manager.Quantity}");
+		}
+		if (parsedArgs.ExpirationDays.HasValue)
+		{
+			Console.WriteLine($"  Expiration Days: {manager.ExpirationDays}");
+		}
+		if (parsedArgs.ExpirationDate.HasValue)
+		{
+			Console.WriteLine($"  Expiration Date: {manager.ExpirationDateUTC:yyyy-MM-dd}");
+		}
+		if (parsedArgs.LicenseAttributes.Count > 0)
+		{
+			Console.WriteLine($"  License Attributes:");
+			foreach (var attribute in parsedArgs.LicenseAttributes)
+			{
+				Console.WriteLine($"    {attribute.Key} = {attribute.Value}");
+			}
+		}
+		if (!string.IsNullOrEmpty(parsedArgs.LockPath))
+		{
+			Console.WriteLine($"  Lock File: {manager.PathAssembly}");
+		}
+	}
+}

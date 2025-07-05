@@ -397,6 +397,7 @@ public class CliArgumentParser
 		Console.WriteLine("At least one must be specified:");
 		Console.WriteLine("  --save, -s           Save the keypair file");
 		Console.WriteLine("  --license, -l <path> Path to the new .lic file (will not overwrite unless --force)");
+		Console.WriteLine("(If neither is specified, it will display properties from .private file.)");
 		Console.WriteLine();
 		Console.WriteLine("Optional Arguments:");
 		Console.WriteLine("  --force, -f                        Overwrite the license file if it already exists");
