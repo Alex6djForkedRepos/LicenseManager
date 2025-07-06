@@ -175,7 +175,8 @@ public class CliArgumentParser
 					{
 						throw new ArgumentException("Missing value for --lock argument");
 					}
-					parser.LockPath = args[++i];
+					// Ensure full path for consistency with GUI
+					parser.LockPath = Path.GetFullPath(args[++i]);
 					break;
 
 				case "--help":
