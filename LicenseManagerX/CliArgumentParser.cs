@@ -55,7 +55,8 @@ public class CliArgumentParser
 					{
 						throw new ArgumentException("Missing value for --private argument");
 					}
-					parser.PrivateFilePath = args[++i];
+					string rawPrivatePath = args[++i];
+					parser.PrivateFilePath = rawPrivatePath.Trim('"');
 					break;
 
 				case "--save":
@@ -69,7 +70,8 @@ public class CliArgumentParser
 					{
 						throw new ArgumentException("Missing value for --license argument");
 					}
-					parser.LicenseFilePath = args[++i];
+					string rawLicensePath = args[++i];
+					parser.LicenseFilePath = rawLicensePath.Trim('"');
 					break;
 
 				case "--force":
@@ -176,7 +178,10 @@ public class CliArgumentParser
 						throw new ArgumentException("Missing value for --lock argument");
 					}
 					// Ensure full path for consistency with GUI
-					parser.LockPath = Path.GetFullPath(args[++i]);
+					// Remove surrounding quotation marks, if any.
+					string rawLockPath = args[++i];
+					string cleanedLockPath = rawLockPath.Trim('"');
+					parser.LockPath = Path.GetFullPath(cleanedLockPath);
 					break;
 
 				case "--help":

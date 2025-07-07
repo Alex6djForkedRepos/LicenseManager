@@ -78,6 +78,46 @@ public class CliArgumentParserTest
 	}
 
 	[TestMethod]
+	public void TestParsePrivateFilePath_RemovesQuotationMarks()
+	{
+		// Arrange
+		string[] args = ["--private", "\"test path\\quoted.private\"", "--license", "test.lic"];
+
+		// Act
+		CliArgumentParser result = CliArgumentParser.Parse(args);
+
+		// Assert
+		Assert.AreEqual("test path\\quoted.private", result.PrivateFilePath, "PrivateFilePath should not contain surrounding quotes.");
+	}
+
+	[TestMethod]
+	public void TestParseLicenseFilePath_RemovesQuotationMarks()
+	{
+		// Arrange
+		string[] args = ["--private", "test.private", "--license", "\"test path\\quoted.lic\""];
+
+		// Act
+		CliArgumentParser result = CliArgumentParser.Parse(args);
+
+		// Assert
+		Assert.AreEqual("test path\\quoted.lic", result.LicenseFilePath, "LicenseFilePath should not contain surrounding quotes.");
+	}
+
+	[TestMethod]
+	public void TestParseBothPaths_RemovesQuotationMarks()
+	{
+		// Arrange
+		string[] args = ["--private", "\"C:\\My Folder\\keypair.private\"", "--license", "\"C:\\My Folder\\license.lic\""];
+
+		// Act
+		CliArgumentParser result = CliArgumentParser.Parse(args);
+
+		// Assert
+		Assert.AreEqual("C:\\My Folder\\keypair.private", result.PrivateFilePath, "PrivateFilePath should not contain surrounding quotes.");
+		Assert.AreEqual("C:\\My Folder\\license.lic", result.LicenseFilePath, "LicenseFilePath should not contain surrounding quotes.");
+	}
+
+	[TestMethod]
 	public void TestParseAllArguments()
 	{
 		// Arrange
@@ -402,7 +442,7 @@ public class CliArgumentParserTest
 		var result = CliArgumentParser.Parse(args);
 
 		// Assert
-		Assert.AreEqual("\"C:\\My App\\My App.exe\"", result.LockPath);
+		Assert.AreEqual("C:\\My App\\My App.exe", result.LockPath);
 	}
 
 	[TestMethod]
