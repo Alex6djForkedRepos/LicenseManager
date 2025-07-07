@@ -62,7 +62,9 @@ jobs:
         uses: fkirc/skip-duplicate-actions@v5.3.1
         with:
           paths_ignore: '[ "**/*.gitignore", "**/*.gitattributes", "**/*.md", "LICENSE" ]'
-          skip_after_successful_duplicate: true
+          skip_after_successful_duplicate: 'true'
+          concurrent_skipping: 'same_content_newer'
+          cancel_others: 'true'
 
   build:
     name: 🏗 Build License Manager X and its components
@@ -419,6 +421,12 @@ jobs:
           #dotnet nuget push ./release/*.nupkg --api-key ${{secrets.TOKEN_PACKAGES}} --source https://nuget.pkg.github.com/${{github.repository_owner}}/index.json --skip-duplicate
           #dotnet nuget push ./release/*.snupkg --api-key ${{secrets.TOKEN_PACKAGES}} --source https://nuget.pkg.github.com/${{github.repository_owner}}/index.json --skip-duplicate
 
+  #
+  # https://docs.github.com/en/actions/how-tos/writing-workflows/choosing-when-your-workflow-runs/using-conditions-to-control-job-execution
+  # "A job that is skipped will report its status as "Success"."
+  # https://docs.github.com/en/actions/how-tos/writing-workflows/choosing-what-your-workflow-does/using-jobs-in-a-workflow
+  # "If a job fails or is skipped, all jobs that need it are skipped unless
+  #  the jobs use a conditional expression that causes the job to continue."
   #
   # If we use a single job that runs after 'build' and 'release', it will not run if 'release' does not run.
   # If we use a single job that depends on 'build', it will run before 'release' downloads the artifact.
