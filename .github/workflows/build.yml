@@ -56,7 +56,7 @@ jobs:
     name: 🧠 Check for redundant runs
     runs-on: ubuntu-latest
     outputs:
-      should_skip: ${{ steps.skip.outputs.should_skip == 'true' }}
+      should_skip: ${{ steps.skip.outputs.should_skip }}
     steps:
       - id: skip
         uses: fkirc/skip-duplicate-actions@v5.3.1
@@ -67,7 +67,7 @@ jobs:
   build:
     name: 🏗 Build License Manager X and its components
     needs: precheck
-    if: ${{ !needs.precheck.outputs.should_skip }}
+    if: ${{ needs.precheck.outputs.should_skip != 'true' }}
     runs-on: windows-latest
 
     permissions:
@@ -419,9 +419,29 @@ jobs:
           #dotnet nuget push ./release/*.nupkg --api-key ${{secrets.TOKEN_PACKAGES}} --source https://nuget.pkg.github.com/${{github.repository_owner}}/index.json --skip-duplicate
           #dotnet nuget push ./release/*.snupkg --api-key ${{secrets.TOKEN_PACKAGES}} --source https://nuget.pkg.github.com/${{github.repository_owner}}/index.json --skip-duplicate
 
-  cleanup:
+  #
+  # If we use a single job that runs after 'build' and 'release', it will not run if 'release' does not run.
+  # If we use a single job that depends on 'build', it will run before 'release' downloads the artifact.
+  #
+  # Run if the 'build' job runs AND the 'release' job will not run.
+  cleanupA:
     name: 🧹 Clean up artifacts
-    needs: [build, release]
+    needs: [build]
+    runs-on: ubuntu-latest
+    if: ${{ !startsWith(github.ref, 'refs/tags/v') }}
+    steps:
+      # Delete publish artifact so it does not count against storage
+      # https://github.com/marketplace/actions/delete-artifact
+      - name: ❌ Delete build artifact
+        uses: GeekyEggo/delete-artifact@v5
+        with:
+          name: ${{ env.ARTIFACT_PACKAGE }}
+          failOnError: false
+
+  # Run if the 'release' job runs.
+  cleanupB:
+    name: 🧹 Clean up artifacts
+    needs: [release]
     runs-on: ubuntu-latest
     if: always()
     steps:
