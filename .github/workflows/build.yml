@@ -62,7 +62,7 @@ jobs:
         uses: fkirc/skip-duplicate-actions@v5.3.1
         with:
           paths_ignore: '[ "**/*.gitignore", "**/*.gitattributes", "**/*.md", "LICENSE" ]'
-          skip_after_successful_duplicate: 'true'
+          skip_after_successful_duplicate: 'false'
           concurrent_skipping: 'same_content_newer'
           cancel_others: 'true'
 
@@ -422,6 +422,7 @@ jobs:
           #dotnet nuget push ./release/*.snupkg --api-key ${{secrets.TOKEN_PACKAGES}} --source https://nuget.pkg.github.com/${{github.repository_owner}}/index.json --skip-duplicate
 
   #
+  # TODO We probably do not need the 'cleanupA' job.
   # https://docs.github.com/en/actions/how-tos/writing-workflows/choosing-when-your-workflow-runs/using-conditions-to-control-job-execution
   # "A job that is skipped will report its status as "Success"."
   # https://docs.github.com/en/actions/how-tos/writing-workflows/choosing-what-your-workflow-does/using-jobs-in-a-workflow
